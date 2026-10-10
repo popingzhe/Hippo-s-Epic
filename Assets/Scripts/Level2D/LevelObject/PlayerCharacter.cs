@@ -11,6 +11,9 @@ using UnityEngine;
         [Header("Flip")]
         [SerializeField] private bool faceRightByDefault = true;
 
+        [Tooltip("翻转目标：只翻视觉层（默认自动取子节点 Visual）。根节点保持不翻，避免把挂在根下的 UI（Gain_exp 经验飘字等）一起镜像")]
+        [SerializeField] private Transform visualRoot;
+
         [Header("动画")]
         [SerializeField] private AnimationController animationController;
 
@@ -34,7 +37,18 @@ using UnityEngine;
 
         private void Awake()
         {
-            _originalScale = transform.localScale;
+            if (visualRoot == null)
+            {
+                visualRoot = transform.Find("Visual");
+            }
+
+            if (visualRoot == null)
+            {
+                Debug.LogWarning("[PlayerCharacter] 未找到 Visual 子节点，翻转回退到根节点（会连带镜像其下 UI）");
+                visualRoot = transform;
+            }
+
+            _originalScale = visualRoot.localScale;
 
             if (animationController == null)
             {
@@ -78,7 +92,11 @@ using UnityEngine;
                 scale.x = faceRight ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
             }
 
-            transform.localScale = scale;
+            // 只翻视觉层：根节点不翻，挂在其下的 UI（Gain_exp 等）不会被镜像
+            if (visualRoot != null)
+            {
+                visualRoot.localScale = scale;
+            }
         }
 
         private void Update()

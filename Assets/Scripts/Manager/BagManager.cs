@@ -28,6 +28,13 @@ public class BagManager
         return GetItemCount(itemId) >= count;
     }
 
+    /// <summary>虚拟经验物品 → 每单位经验值（item 表『经验值+N』系列，id=10『经验值+1』）。
+    /// 获取时直接消化成经验：不进背包列表、不进存档；将来新增经验物品在这里登记一行即可。</summary>
+    private static readonly Dictionary<int, int> ExpItemValues = new Dictionary<int, int>
+    {
+        { 10, 1 },   // 『经验值+1』
+    };
+
     public int AddItem(int itemId, int count = 1)
     {
         if (count <= 0) return 0;
@@ -37,6 +44,16 @@ public class BagManager
         {
             Debug.LogWarning($"[BagManager] 物品配置不存在: {itemId}");
             return 0;
+        }
+
+        // —— 虚拟经验物品：获取即转化，不进背包、不进存档。
+        //    仍返回 count（added>0）：调用方流程照走——拾取分支会正常弹 SceneTip 物品提示。
+        if (ExpItemValues.TryGetValue(itemId, out int expPerUnit))
+        {
+            int expAmount = expPerUnit * count;
+            CharacterStatsManager.Instance.AddExp(expAmount);
+            Debug.Log($"[BagManager] 经验物品转化: {itemCfg.Name} x{count} → AddExp({expAmount})");
+            return count;
         }
 
         int added = 0;

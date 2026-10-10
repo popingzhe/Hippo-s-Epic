@@ -325,13 +325,21 @@ public class Interactable : MonoBehaviour
 
         // —— 获取物品劫持：真的拿到物品时，先隐藏原交互 UI，在原位显示物品获得提示（SceneTip）；
         //    点确认后才继续走原流程的收尾（切阶段 / 销毁 / 隐藏 / 刷新）
-        if (button.type == InteractionType.Pickup && added > 0)
+        //    虚拟物品（item.type=1，例『经验值+1』）：获取即消化，不弹物品获得框，直接推进流程
+        if (button.type == InteractionType.Pickup && added > 0 && !IsVirtualItem(button.dataId))
         {
             HijackWithItemTip(button, phase);
             return;
         }
 
         CompleteExecute(button, phase);
+    }
+
+    /// <summary>虚拟物品（item.type=1）：不在背包显示、获取即消化——获取时不弹物品获得提示框。</summary>
+    private static bool IsVirtualItem(int itemId)
+    {
+        var itemCfg = BagManager.Instance.GetItemConfig(itemId);
+        return itemCfg != null && itemCfg.Type == 1;
     }
 
     private void CompleteExecute(ButtonOption button, InteractionPhase phase)

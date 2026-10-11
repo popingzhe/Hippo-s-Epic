@@ -205,17 +205,9 @@ MonoBehaviour:
     forwardClip: {fileID: 7400000, guid: cf8c13d2452ce9d4a9cd627cee98144a, type: 2}
     reverseClip: {fileID: 7400000, guid: e795b725be6006b4e9f9e1e8aa754c30, type: 2}
   - fromNode: 6
-    toNode: 4
-    forwardClip: {fileID: 7400000, guid: fd5ac4eaeab15d848818a002a8304a50, type: 2}
-    reverseClip: {fileID: 7400000, guid: 48dbd0b2c6c725442aed08c9875fc50b, type: 2}
-  - fromNode: 6
-    toNode: 4
-    forwardClip: {fileID: 7400000, guid: fd5ac4eaeab15d848818a002a8304a50, type: 2}
-    reverseClip: {fileID: 7400000, guid: 48dbd0b2c6c725442aed08c9875fc50b, type: 2}
-  - fromNode: 6
-    toNode: 4
-    forwardClip: {fileID: 7400000, guid: fd5ac4eaeab15d848818a002a8304a50, type: 2}
-    reverseClip: {fileID: 7400000, guid: 48dbd0b2c6c725442aed08c9875fc50b, type: 2}
+    toNode: 1
+    forwardClip: {fileID: 7400000, guid: 351eaa8082f399b49bb557513ea7c91d, type: 2}
+    reverseClip: {fileID: 7400000, guid: bc38b20cb43abed4aa51182e2dead056, type: 2}
 --- !u!1 &3373653342798877329
 GameObject:
   m_ObjectHideFlags: 0

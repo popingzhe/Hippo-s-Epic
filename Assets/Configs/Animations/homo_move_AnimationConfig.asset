@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 667ecdb9b442b9f49a7a2aaee87ac430, type: 3}
   m_Name: homo_move_AnimationConfig
   m_EditorClassIdentifier: 
-  skeletonData: {fileID: 11400000, guid: fc24484f15958984fb6a47b29c02ebc0, type: 2}
+  skeletonData: {fileID: 11400000, guid: 9b5a6277056070b4abf0997ba76b5210, type: 2}
   clips:
   - name: attack
     animation: {fileID: 11400000, guid: 75857af6823533c4c9ba6da4a93971d8, type: 2}

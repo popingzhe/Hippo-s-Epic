@@ -177,25 +177,41 @@ MonoBehaviour:
   nodes:
   - nodeId: 4
     button: {fileID: 214563403058024528}
-    targetMap: 3
+    targetMap: 4
     conditionId: 0
   - nodeId: 1
     button: {fileID: 6269418372276423275}
-    targetMap: 4
+    targetMap: 9
     conditionId: 0
   - nodeId: 3
     button: {fileID: 621856698228769782}
-    targetMap: 5
+    targetMap: 6
     conditionId: 0
   - nodeId: 6
     button: {fileID: 6247996960224392723}
     targetMap: 2
+    conditionId: 0
+  - nodeId: 6
+    button: {fileID: 3450277092458789610}
+    targetMap: 5
     conditionId: 0
   transitions:
   - fromNode: 4
     toNode: 1
     forwardClip: {fileID: 7400000, guid: b228bffc06bd26c4b92d57cd2dbc2d60, type: 2}
     reverseClip: {fileID: 7400000, guid: 14bed599b77be3c4ca4f858e44e93ec5, type: 2}
+  - fromNode: 6
+    toNode: 4
+    forwardClip: {fileID: 7400000, guid: fd5ac4eaeab15d848818a002a8304a50, type: 2}
+    reverseClip: {fileID: 7400000, guid: 48dbd0b2c6c725442aed08c9875fc50b, type: 2}
+  - fromNode: 6
+    toNode: 4
+    forwardClip: {fileID: 7400000, guid: fd5ac4eaeab15d848818a002a8304a50, type: 2}
+    reverseClip: {fileID: 7400000, guid: 48dbd0b2c6c725442aed08c9875fc50b, type: 2}
+  - fromNode: 6
+    toNode: 4
+    forwardClip: {fileID: 7400000, guid: fd5ac4eaeab15d848818a002a8304a50, type: 2}
+    reverseClip: {fileID: 7400000, guid: 48dbd0b2c6c725442aed08c9875fc50b, type: 2}
   - fromNode: 6
     toNode: 4
     forwardClip: {fileID: 7400000, guid: fd5ac4eaeab15d848818a002a8304a50, type: 2}

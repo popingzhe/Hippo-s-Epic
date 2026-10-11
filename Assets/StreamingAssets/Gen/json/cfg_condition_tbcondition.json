@@ -1,5 +1,30 @@
 [
   {
+    "id": 0,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
     "id": 1,
     "composeType": [
       [
@@ -398,6 +423,60 @@
     "battleId": [],
     "dialogFinishId": [
       1003005
+    ]
+  },
+  {
+    "id": 14,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": [
+      1005001
+    ]
+  },
+  {
+    "id": 15,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": [
+      1006001
     ]
   }
 ]

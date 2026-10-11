@@ -1689,5 +1689,43 @@
     "right_slot3_image": "",
     "background": "",
     "gain_item_text": ""
+  },
+  {
+    "id": 91,
+    "dialogid": 1005001,
+    "type": 2,
+    "content": "巴拉巴拉，无论如何，去拳击馆",
+    "sortid": 0,
+    "statename1": "idle",
+    "statename2": "talk",
+    "slotstateid1": 0,
+    "slotstateid2": 0,
+    "right_slot1_personid": 0,
+    "right_slot1_image": "",
+    "right_slot2_personid": 0,
+    "right_slot2_image": "",
+    "right_slot3_personid": 0,
+    "right_slot3_image": "",
+    "background": "",
+    "gain_item_text": ""
+  },
+  {
+    "id": 92,
+    "dialogid": 1005001,
+    "type": 1,
+    "content": "好吧。",
+    "sortid": 0,
+    "statename1": "talk",
+    "statename2": "idle",
+    "slotstateid1": 0,
+    "slotstateid2": 0,
+    "right_slot1_personid": 0,
+    "right_slot1_image": "",
+    "right_slot2_personid": 0,
+    "right_slot2_image": "",
+    "right_slot3_personid": 0,
+    "right_slot3_image": "",
+    "background": "",
+    "gain_item_text": ""
   }
 ]

@@ -1,14 +1,14 @@
 [
   {
-    "id": 1,
-    "type": 0,
+    "id": 2,
+    "type": 1,
     "state": 2,
     "nodeseq": [
-      1
+      4
     ],
-    "conditionid": 1,
-    "name": "拳头打人不会疼",
-    "shorttext": "让拳击比赛重新开起来，不管用什么方法都行。",
+    "conditionid": 0,
+    "name": "我是谁？我在哪儿？",
+    "shorttext": "你不知道该干什么，问下前面这个长得像骨裂的人吧。",
     "longtext": ""
   }
 ]

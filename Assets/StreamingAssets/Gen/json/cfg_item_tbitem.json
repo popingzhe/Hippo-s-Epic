@@ -30,8 +30,8 @@
     "param2": [],
     "param3": [],
     "battletip": "战斗详情：待配置",
-    "gethint": "",
-    "getexclaim": ""
+    "gethint": "天哪，太臭了，太臭了，快把他放起来！",
+    "getexclaim": "尽情地享受吧！"
   },
   {
     "id": 3,
@@ -249,8 +249,8 @@
     "param2": [],
     "param3": [],
     "battletip": "",
-    "gethint": "",
-    "getexclaim": ""
+    "gethint": "天哪，太臭了，太臭了，快把他放起来！",
+    "getexclaim": "尽情地享受吧！"
   },
   {
     "id": 1002,

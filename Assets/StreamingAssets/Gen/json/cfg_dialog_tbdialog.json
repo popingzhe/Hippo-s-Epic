@@ -187,5 +187,18 @@
     "condition_ids": [
       0
     ]
+  },
+  {
+    "id": 1005001,
+    "type": 1,
+    "param1": [],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": [
+      0
+    ]
   }
 ]

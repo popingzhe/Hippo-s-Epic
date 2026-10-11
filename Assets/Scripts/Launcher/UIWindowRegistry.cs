@@ -10,6 +10,7 @@ public static class UIWindowRegistry
         UIManager.RegisterAddress(typeof(LoadingPanel), "Assets/Prefabs/UI/Global/LoadingPanel");
         UIManager.RegisterAddress(typeof(BagPanel), "Assets/Prefabs/UI/Bag/BagPanel");
         UIManager.RegisterAddress(typeof(UseItemTip), "Assets/Prefabs/UI/Bag/UseItemTip");
+        UIManager.RegisterAddress(typeof(CommonTipPanel), "Assets/Prefabs/UI/common/CommonTipPanel");
         UIManager.RegisterAddress(typeof(TaskPanel), "Assets/Prefabs/UI/task/TaskPanel");
         UIManager.RegisterAddress(typeof(MapPanel), "Assets/Prefabs/UI/map/MapPanel");
         UIManager.RegisterAddress(typeof(MainPanelController), "Assets/Prefabs/UI/Global/MainPanel");

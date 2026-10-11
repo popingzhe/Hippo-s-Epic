@@ -64,6 +64,10 @@ public class BagPanel : UIWindow
 
     private GameObject _dragIcon;
     private BagItem _dragBagItem;
+    private readonly HashSet<int> _traitIds = new HashSet<int>();
+    private bool _traitTipShowing;
+
+    private const int PlayerPersonId = 1;   // 与 BagManager.PlayerPersonId 一致
 #pragma warning disable CS0414
     private bool _isDragging;
 #pragma warning restore CS0414
@@ -77,6 +81,8 @@ public class BagPanel : UIWindow
             EquipManager.Instance.OnEquipChanged -= OnEquipChanged;
         if (CharacterStatsManager.Instance != null)
             CharacterStatsManager.Instance.OnStatsChanged -= OnStatsChanged;
+        if (BuffManager.Instance != null)
+            BuffManager.Instance.OnBuffChanged -= OnBuffChanged;
     }
 
     public override void OnCreate(object args)
@@ -106,6 +112,10 @@ public class BagPanel : UIWindow
 
         CharacterStatsManager.Instance.OnStatsChanged -= OnStatsChanged;
         CharacterStatsManager.Instance.OnStatsChanged += OnStatsChanged;
+
+        // 特质（长期 buff）变化时刷新右列
+        BuffManager.Instance.OnBuffChanged -= OnBuffChanged;
+        BuffManager.Instance.OnBuffChanged += OnBuffChanged;
 
         // 行模板只用于克隆，运行时隐藏
         if (infoRowTemplate != null)
@@ -145,6 +155,8 @@ public class BagPanel : UIWindow
 
     public override void OnClose()
     {
+        // 面板被关掉时收不到行的"移出"事件 ⇒ 主动收掉通用提示框，避免留一个飘在外面的提示
+        HideTraitTip();
     }
 
     private void SetFilter(int type, int childtype = -1)
@@ -577,7 +589,7 @@ public class BagPanel : UIWindow
 
         RefreshTopExp(stats);
         RefreshTopAttrs(stats);
-        RefreshTopPerks(stats);
+        RefreshTopTraits();
     }
 
     /// <summary>经验进度：等级表一行 = 一个等级（Id = 等级），该行 Level 列 = 升下一级所需经验。
@@ -623,23 +635,102 @@ public class BagPanel : UIWindow
         AddInfoRow(attrContent, "理智：" + stats.FinalCreatorwilling);
     }
 
-    /// <summary>右列：已拥有的技能名字。</summary>
-    private void RefreshTopPerks(CharacterStats stats)
+    /// <summary>右列：玩家的特质 = 长期 buff（buff 表 showtype==2「背包显示」的那些）。</summary>
+    private void RefreshTopTraits()
     {
         ClearInfoRows(perkContent);
 
         var tables = GetTables();
-        foreach (int skillId in stats.UnlockedSkills)
-        {
-            string name = null;
-            if (tables != null && tables.TbSkill != null)
-            {
-                var skillCfg = tables.TbSkill.GetOrDefault(skillId);
-                if (skillCfg != null) name = skillCfg.Name;
-            }
+        if (tables == null || tables.TbBuff == null) return;
 
-            AddInfoRow(perkContent, string.IsNullOrEmpty(name) ? ("技能" + skillId) : name);
+        var ids = CollectTraitIds(tables);
+        foreach (int buffId in ids)
+        {
+            var buffCfg = tables.TbBuff.GetOrDefault(buffId);
+            if (buffCfg == null) continue;
+
+            TextMeshProUGUI row = AddInfoRow(perkContent, buffCfg.Name);
+            AttachHover(row, buffId);
         }
+    }
+
+    /// <summary>特质 id 来源：person 表 buffIds（角色持有 buff）+ 运行时 BuffManager 活跃 buff，
+    /// 过滤条件 = buff 表 showtype==2（背包显示）。</summary>
+    private List<int> CollectTraitIds(cfg.Tables tables)
+    {
+        _traitIds.Clear();
+
+        var person = tables.TbPerson != null ? tables.TbPerson.GetOrDefault(PlayerPersonId) : null;
+        if (person != null && person.BuffIds != null)
+        {
+            foreach (int id in person.BuffIds)
+                if (id > 0) _traitIds.Add(id);
+        }
+
+        var buffMgr = BuffManager.Instance;
+        foreach (var active in buffMgr.ActiveBuffs)
+            if (active != null && active.BuffId > 0) _traitIds.Add(active.BuffId);
+
+        var result = new List<int>();
+        foreach (int id in _traitIds)
+        {
+            var buffCfg = tables.TbBuff.GetOrDefault(id);
+            if (buffCfg == null || buffCfg.Showtype != 2) continue;
+            result.Add(id);
+        }
+        result.Sort();
+        return result;
+    }
+
+    private void AttachHover(TextMeshProUGUI row, int buffId)
+    {
+        if (row == null) return;
+
+        row.raycastTarget = true;   // 行要能收到鼠标事件
+        var hover = row.gameObject.GetComponent<BagInfoRowHover>();
+        if (hover == null) hover = row.gameObject.AddComponent<BagInfoRowHover>();
+        hover.Bind(this, buffId);
+    }
+
+    private void OnBuffChanged(int buffId, bool added)
+    {
+        if (this == null) return;
+        if (!gameObject.activeInHierarchy) return;
+        RefreshTopTraits();
+    }
+
+    /// <summary>悬浮特质行：用通用提示框 CommonTipPanel 贴着鼠标显示这条特质（buff）的详情。</summary>
+    public void ShowTraitTip(int buffId, Vector2 screenPosition)
+    {
+        var tables = GetTables();
+        if (tables == null || tables.TbBuff == null) return;
+
+        var buffCfg = tables.TbBuff.GetOrDefault(buffId);
+        if (buffCfg == null) return;
+
+        // 拼文本：名字 / 文本描述 / 功能说明（缺项自动跳过）
+        string desc = buffCfg.Descrption;
+        string func = buffCfg.Tip;
+        string body;
+        if (string.IsNullOrEmpty(func)) body = desc;
+        else if (string.IsNullOrEmpty(desc)) body = func;
+        else body = desc + "\n" + func;
+
+        string text = buffCfg.Name;
+        if (!string.IsNullOrEmpty(body))
+            text = string.IsNullOrEmpty(text) ? body : text + "\n" + body;
+        if (string.IsNullOrEmpty(text)) return;
+
+        _traitTipShowing = true;
+        CommonTipPanel.ShowAt(text, screenPosition);
+    }
+
+    /// <summary>鼠标移出特质行：关掉通用提示框（右下角物品详情本来就没被动过）。</summary>
+    public void HideTraitTip()
+    {
+        if (!_traitTipShowing) return;
+        _traitTipShowing = false;
+        CommonTipPanel.Hide();
     }
 
     private void ClearInfoRows(Transform content)
@@ -657,13 +748,14 @@ public class BagPanel : UIWindow
             Destroy(go);
     }
 
-    private void AddInfoRow(Transform content, string text)
+    private TextMeshProUGUI AddInfoRow(Transform content, string text)
     {
-        if (content == null || infoRowTemplate == null) return;
+        if (content == null || infoRowTemplate == null) return null;
 
         TextMeshProUGUI row = Instantiate(infoRowTemplate, content, false);
         row.gameObject.SetActive(true);
         row.text = text;
+        return row;
     }
 
     private void OnStatsChanged()
@@ -683,5 +775,28 @@ public class BagPanel : UIWindow
     private Sprite LoadIcon(int iconId)
     {
         return IconLoader.LoadItemIcon(iconId);
+    }
+}
+
+/// <summary>顶部信息行的鼠标悬浮处理：进入显示提示框，移出恢复。</summary>
+public class BagInfoRowHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+{
+    private BagPanel _panel;
+    private int _buffId;
+
+    public void Bind(BagPanel panel, int buffId)
+    {
+        _panel = panel;
+        _buffId = buffId;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_panel != null) _panel.ShowTraitTip(_buffId, eventData.position);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (_panel != null) _panel.HideTraitTip();
     }
 }

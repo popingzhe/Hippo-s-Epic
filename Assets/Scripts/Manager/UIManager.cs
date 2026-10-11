@@ -244,11 +244,19 @@ public class UIManager : MonoBehaviour
         window.transform.SetParent(rootCanvas.transform, false);
 
         var canvas = window.GetComponent<Canvas>();
-        if (canvas != null)
+        if (canvas == null)
         {
-            canvas.overrideSorting = true;
-            canvas.sortingOrder = (int)window.Layer;
+            // 窗口根节点没有 Canvas 时补一个：UILayer 分级要靠每个窗口自己的 sortingOrder 落地，
+            // 否则 sortingOrder 根本不会被设置，窗口前后关系全部由兄弟顺序（打开顺序）决定。
+            // 子 Canvas 不接收鼠标事件、不需要 Scaler / Raycaster，缩放等一律继承外层根画布；
+            // sortingLayer 必须跟根画布保持一致，否则排序会落到别的 sortingLayer 桶里。
+            canvas = window.gameObject.AddComponent<Canvas>();
+            canvas.renderMode = rootCanvas.renderMode;
+            canvas.sortingLayerID = rootCanvas.sortingLayerID;
         }
+
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = (int)window.Layer;
 
         var rect = window.transform as RectTransform;
         if (rect != null)

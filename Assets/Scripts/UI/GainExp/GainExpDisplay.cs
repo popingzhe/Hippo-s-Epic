@@ -4,14 +4,14 @@ using UnityEngine.UI;
 
 /// <summary>
 /// 获得经验提示（Gain_exp）—— 经验变动（CharacterStatsManager.AddExp）时弹出：
-///   process      &lt;- 当前等级经验进度（fillAmount = 本等级内进度）
+///   process      &lt;- 本级经验进度（fillAmount）
 ///   level        &lt;- "LEVEL:x"   当前等级
 ///   exp          &lt;- "EXP:+n"    本次获得经验
-///   process_text &lt;- "cur/max"   当前等级经验进度数字（满级显示 MAX）
-/// 数据来源：CharacterStatsManager（角色属性）+ TbCharacterlevel（等级表：Id=累计经验门槛, Level=对应等级）。
-/// 随角色预制体常驻；运行时默认隐藏，获得经验后显示 showDuration 秒。
-/// 战斗结算在战斗场景发放经验、再切回关卡（角色由场景重新加载）——组件生成时若发现有
-/// 未展示过的经验（HasPendingExpGain），补弹一次，保证战斗奖励回到关卡也能看到。
+///   process_text &lt;- "cur/max"   本级经验进度数字（表里没有该等级时显示 MAX）
+/// 数据来源：CharacterStatsManager（角色属性）+ TbCharacterlevel（等级表：一行一个等级，Id=等级，Level 列=该级升级所需经验）。
+/// 弹出表现：**从下往上**——下方渐入升到原位 → 停留 showDuration 秒 → 继续上飘渐出（Update 驱动，不用协程）。
+/// 随角色预制体常驻；运行时默认隐藏。战斗结算在战斗场景发放经验、再切回关卡（角色由场景重新加载）——
+/// 组件生成时若发现有未展示过的经验（HasPendingExpGain），补弹一次，保证战斗奖励回到关卡也能看到。
 /// </summary>
 public class GainExpDisplay : MonoBehaviour
 {
@@ -21,16 +21,30 @@ public class GainExpDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI expText;
     [SerializeField] private TextMeshProUGUI processText;
 
-    [Header("显示时长（秒）")]
+    [Header("停留时长（秒）")]
     [SerializeField] private float showDuration = 2.5f;
 
+    [Header("弹出表现（从下到上：渐入 → 停留 → 上飘渐出）")]
+    [SerializeField] private CanvasGroup canvasGroup;      // 留空则运行时自动添加
+    [SerializeField] private float fadeInTime = 0.22f;     // 渐入时长
+    [SerializeField] private float fadeOutTime = 0.4f;     // 渐出（上飘）时长
+    [SerializeField] private float moveDistance = 0.5f;   // 上移距离（本地单位，玩家根空间）
+
+    private enum Phase { None, FadeIn, Hold, FadeOut }
+
     private Canvas _canvas;
-    private float _hideAt;
+    private Vector3 _baseLocalPos;
+    private Phase _phase = Phase.None;
+    private float _phaseTime;
     private bool _subscribed;
 
     private void Awake()
     {
         _canvas = GetComponent<Canvas>();
+        if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+        _baseLocalPos = transform.localPosition;
         SetVisible(false);   // 运行时默认隐藏（编辑模式不受影响，方便美术看摆位）
     }
 
@@ -58,9 +72,46 @@ public class GainExpDisplay : MonoBehaviour
 
     private void Update()
     {
-        // 显示超时后自动隐藏（Update 驱动，不用协程）
-        if (_canvas != null && _canvas.enabled && Time.unscaledTime >= _hideAt)
-            SetVisible(false);
+        if (_phase == Phase.None) return;
+
+        // 掉帧/卡顿（场景切换、编辑器停帧等）时钳一下，否则一整段动画会被一帧跳完
+        float dt = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
+
+        switch (_phase)
+        {
+            case Phase.FadeIn:
+            {
+                _phaseTime += dt;
+                float p = fadeInTime > 0f ? Mathf.Clamp01(_phaseTime / fadeInTime) : 1f;
+                float e = 1f - (1f - p) * (1f - p);      // easeOutQuad：起步快、收尾稳
+
+                if (canvasGroup != null) canvasGroup.alpha = e;
+                transform.localPosition = Vector3.Lerp(_baseLocalPos + Vector3.down * moveDistance, _baseLocalPos, e);
+
+                if (p >= 1f) { _phase = Phase.Hold; _phaseTime = 0f; }
+                break;
+            }
+
+            case Phase.Hold:
+            {
+                _phaseTime += dt;
+                if (_phaseTime >= showDuration) { _phase = Phase.FadeOut; _phaseTime = 0f; }
+                break;
+            }
+
+            case Phase.FadeOut:
+            {
+                _phaseTime += dt;
+                float p = fadeOutTime > 0f ? Mathf.Clamp01(_phaseTime / fadeOutTime) : 1f;
+                float e = p * p;                          // easeInQuad：越飘越快
+
+                if (canvasGroup != null) canvasGroup.alpha = 1f - e;
+                transform.localPosition = Vector3.Lerp(_baseLocalPos, _baseLocalPos + Vector3.up * moveDistance, e);
+
+                if (p >= 1f) Finish();
+                break;
+            }
+        }
     }
 
     private void OnExpGained(int amount)
@@ -71,9 +122,26 @@ public class GainExpDisplay : MonoBehaviour
     private void ShowGain(int amount)
     {
         Refresh(amount);
+
+        // 起点：下方 + 全透明，然后渐入升上来
+        transform.localPosition = _baseLocalPos + Vector3.down * moveDistance;
+        if (canvasGroup != null) canvasGroup.alpha = 0f;
+
         SetVisible(true);
-        _hideAt = Time.unscaledTime + showDuration;
+        _phase = Phase.FadeIn;
+        _phaseTime = 0f;
+
         CharacterStatsManager.Instance.MarkExpGainShown();
+    }
+
+    private void Finish()
+    {
+        _phase = Phase.None;
+        _phaseTime = 0f;
+
+        SetVisible(false);
+        transform.localPosition = _baseLocalPos;
+        if (canvasGroup != null) canvasGroup.alpha = 1f;   // 复位，免得下次渐入前闪一下
     }
 
     /// <summary>按当前角色属性刷新界面。gained 仅用于 "EXP:+n" 的 n。</summary>
@@ -86,34 +154,25 @@ public class GainExpDisplay : MonoBehaviour
             return;
         }
 
-        int cur = 0;
+        // 等级表一行 = 一个等级（Id = 等级），该行 Level 列 = 升下一级所需经验
+        // cur = 本级已攒经验，max = 本级升级所需经验；表里没有该等级时显示 MAX
+        int cur = Mathf.Max(0, stats.Exp);
         int max = 0;
         bool maxed = false;
 
         cfg.Tables tables = GetTables();
         if (tables != null && tables.TbCharacterlevel != null)
         {
-            // 等级表按"每档固定经验"设计，等级是跳档的（例：20/25/30…）——不能在表里找"等级+1"，
-            // 要取：不高于当前等级的最大档（当前档位）与高于当前等级的最小档（下一档）。
-            int prevThreshold = 0;    // 达到当前档位所需的累计经验
-            int nextThreshold = -1;   // 达到下一档所需的累计经验（-1 = 已到表内最高档）
-            int prevLevel = int.MinValue;
-            int nextLevel = int.MaxValue;
+            int needExp = -1;   // 本级升级所需经验
             foreach (var row in tables.TbCharacterlevel.DataList)
             {
-                if (row.Level <= stats.Level)
-                {
-                    if (row.Level >= prevLevel) { prevLevel = row.Level; prevThreshold = row.Id; }
-                }
-                else if (row.Level < nextLevel)
-                {
-                    nextLevel = row.Level; nextThreshold = row.Id;
-                }
+                if (row.Id != stats.Level) continue;
+                needExp = row.Level;
+                break;
             }
 
-            cur = Mathf.Max(0, stats.Exp - prevThreshold);
-            if (nextThreshold >= 0) max = Mathf.Max(1, nextThreshold - prevThreshold);
-            else maxed = true;
+            if (needExp < 0) maxed = true;            // 表里没有该等级
+            else max = Mathf.Max(1, needExp);
         }
         else
         {
@@ -132,8 +191,12 @@ public class GainExpDisplay : MonoBehaviour
     private void PreviewOnce()
     {
         Refresh(8);
+        // 编辑器里点菜单看不到 Update 过程，直接把"停留"中间态摆出来
         SetVisible(true);
-        _hideAt = Time.unscaledTime + showDuration;
+        if (canvasGroup != null) canvasGroup.alpha = 1f;
+        transform.localPosition = _baseLocalPos;
+        _phase = Phase.Hold;
+        _phaseTime = 0f;
     }
 
     private void SetVisible(bool visible)

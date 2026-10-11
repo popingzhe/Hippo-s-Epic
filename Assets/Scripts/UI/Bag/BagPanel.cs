@@ -45,6 +45,14 @@ public class BagPanel : UIWindow
     
     [SerializeField] private Button btnClose;
 
+    [Header("顶部信息")]
+    [SerializeField] private TextMeshProUGUI topLevelText;
+    [SerializeField] private Image topExpFill;
+    [SerializeField] private TextMeshProUGUI topExpText;
+    [SerializeField] private Transform attrContent;
+    [SerializeField] private Transform perkContent;
+    [SerializeField] private TextMeshProUGUI infoRowTemplate;
+
     private readonly List<BagItem> _bagItems = new List<BagItem>();
     private readonly Dictionary<EquipSlot, BagEquip> _equipSlots = new Dictionary<EquipSlot, BagEquip>();
 
@@ -67,6 +75,8 @@ public class BagPanel : UIWindow
             BagManager.Instance.OnItemChanged -= OnItemChanged;
         if (EquipManager.Instance != null)
             EquipManager.Instance.OnEquipChanged -= OnEquipChanged;
+        if (CharacterStatsManager.Instance != null)
+            CharacterStatsManager.Instance.OnStatsChanged -= OnStatsChanged;
     }
 
     public override void OnCreate(object args)
@@ -93,6 +103,13 @@ public class BagPanel : UIWindow
         BagManager.Instance.OnItemChanged += OnItemChanged;
         EquipManager.Instance.OnEquipChanged -= OnEquipChanged;
         EquipManager.Instance.OnEquipChanged += OnEquipChanged;
+
+        CharacterStatsManager.Instance.OnStatsChanged -= OnStatsChanged;
+        CharacterStatsManager.Instance.OnStatsChanged += OnStatsChanged;
+
+        // 行模板只用于克隆，运行时隐藏
+        if (infoRowTemplate != null)
+            infoRowTemplate.gameObject.SetActive(false);
 
         if (toggleGroup != null)
             toggleGroup.allowSwitchOff = true;
@@ -123,6 +140,7 @@ public class BagPanel : UIWindow
         RefreshList();
         RefreshEquips();
         ClearSelection();
+        RefreshTopInfo();
     }
 
     public override void OnClose()
@@ -544,6 +562,115 @@ public class BagPanel : UIWindow
             else
                 ClearSelection();
         }
+    }
+
+    // —— 顶部信息：等级 / 经验进度 / 左列属性 / 右列技能 ——
+
+    private void RefreshTopInfo()
+    {
+        CharacterStatsManager mgr = CharacterStatsManager.Instance;
+        CharacterStats stats = mgr != null ? mgr.PlayerStats : null;
+        if (stats == null) return;
+
+        if (topLevelText != null)
+            topLevelText.text = "LEVEL:" + stats.Level;
+
+        RefreshTopExp(stats);
+        RefreshTopAttrs(stats);
+        RefreshTopPerks(stats);
+    }
+
+    /// <summary>经验进度：等级表一行 = 一个等级（Id = 等级），该行 Level 列 = 升下一级所需经验。
+    /// cur = 本级已攒经验，max = 本级升级所需经验；表里没有该等级时显示 MAX。（与 GainExpDisplay 同一套算法）</summary>
+    private void RefreshTopExp(CharacterStats stats)
+    {
+        int cur = Mathf.Max(0, stats.Exp);
+        int max = 0;
+        bool maxed = false;
+
+        var tables = GetTables();
+        if (tables != null && tables.TbCharacterlevel != null)
+        {
+            int needExp = -1;   // 本级升级所需经验
+            foreach (var row in tables.TbCharacterlevel.DataList)
+            {
+                if (row.Id != stats.Level) continue;
+                needExp = row.Level;
+                break;
+            }
+
+            if (needExp < 0) maxed = true;            // 表里没有该等级
+            else max = Mathf.Max(1, needExp);
+        }
+        else
+        {
+            maxed = true;   // 等级表未就绪：按满格处理
+        }
+
+        if (topExpFill != null)
+            topExpFill.fillAmount = maxed ? 1f : Mathf.Clamp01(max > 0 ? (float)cur / max : 0f);
+
+        if (topExpText != null)
+            topExpText.text = maxed ? "MAX" : (cur + "/" + max);
+    }
+
+    /// <summary>左列：力量 / 体质 / 理智（取含加成的最终值）。</summary>
+    private void RefreshTopAttrs(CharacterStats stats)
+    {
+        ClearInfoRows(attrContent);
+        AddInfoRow(attrContent, "力量：" + stats.FinalDestroy);
+        AddInfoRow(attrContent, "体质：" + stats.FinalSelfmatain);
+        AddInfoRow(attrContent, "理智：" + stats.FinalCreatorwilling);
+    }
+
+    /// <summary>右列：已拥有的技能名字。</summary>
+    private void RefreshTopPerks(CharacterStats stats)
+    {
+        ClearInfoRows(perkContent);
+
+        var tables = GetTables();
+        foreach (int skillId in stats.UnlockedSkills)
+        {
+            string name = null;
+            if (tables != null && tables.TbSkill != null)
+            {
+                var skillCfg = tables.TbSkill.GetOrDefault(skillId);
+                if (skillCfg != null) name = skillCfg.Name;
+            }
+
+            AddInfoRow(perkContent, string.IsNullOrEmpty(name) ? ("技能" + skillId) : name);
+        }
+    }
+
+    private void ClearInfoRows(Transform content)
+    {
+        if (content == null) return;
+
+        var removing = new List<GameObject>();
+        for (int i = 0; i < content.childCount; i++)
+        {
+            Transform child = content.GetChild(i);
+            if (infoRowTemplate != null && child == infoRowTemplate.transform) continue;
+            removing.Add(child.gameObject);
+        }
+        foreach (var go in removing)
+            Destroy(go);
+    }
+
+    private void AddInfoRow(Transform content, string text)
+    {
+        if (content == null || infoRowTemplate == null) return;
+
+        TextMeshProUGUI row = Instantiate(infoRowTemplate, content, false);
+        row.gameObject.SetActive(true);
+        row.text = text;
+    }
+
+    private void OnStatsChanged()
+    {
+        if (this == null) return;   // 面板已销毁时的残留引用
+        if (!gameObject.activeInHierarchy) return;
+        RefreshTopInfo();
     }
 
     private cfg.Tables GetTables()

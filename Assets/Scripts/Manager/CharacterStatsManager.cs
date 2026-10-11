@@ -140,35 +140,45 @@ public class CharacterStatsManager
         OnStatsChanged?.Invoke();
         OnExpGained?.Invoke(actual);
 
-        Debug.Log($"[CharacterStatsManager] 获得经验: {actual}(x{_playerStats.ExpBonus}), 总经验={_playerStats.Exp}, 等级={_playerStats.Level}");
+        Debug.Log($"[CharacterStatsManager] 获得经验: {actual}(x{_playerStats.ExpBonus}), 当前档经验={_playerStats.Exp}, 等级={_playerStats.Level}");
     }
 
+    /// <summary>
+    /// 按等级表逐档结算。等级表一行 = 一个等级：
+    ///   Id         = 等级
+    ///   Level      = 升到下一级所需经验
+    ///   Skillpoint = 升这一级给的点数（写几给几）
+    /// 经验够就扣掉该级所需经验、等级 +1，多余的结转到下一级；每级只结算一次（等级本身就是位置）。
+    /// </summary>
     private void CheckLevelUp()
     {
         var tables = GetTables();
-        if (tables == null) return;
+        if (tables == null || tables.TbCharacterlevel == null) return;
 
         bool leveledUp = false;
 
-        foreach (var cl in tables.TbCharacterlevel.DataList)
+        while (true)
         {
-            if (cl.Level <= _playerStats.Level)
-                continue;
-
-            if (_playerStats.Exp >= cl.Id)
+            // 当前等级对应表里 Id == 等级 的那一行
+            int needExp = -1;
+            int skillPoint = 0;
+            foreach (var row in tables.TbCharacterlevel.DataList)
             {
-                _playerStats.Level = cl.Level;
-                _playerStats.SkillPoint += cl.Skillpoint;
-
-                if (cl.Skillpoint > 0)
-                    Debug.Log($"[CharacterStatsManager] 升级! Level={cl.Level}, 获得技能点+{cl.Skillpoint}");
-
-                leveledUp = true;
-            }
-            else
-            {
+                if (row.Id != _playerStats.Level) continue;
+                needExp = row.Level;      // 该级升级所需经验
+                skillPoint = row.Skillpoint;
                 break;
             }
+
+            if (needExp < 0) break;                    // 表里没有当前等级（超出表范围）
+            if (_playerStats.Exp < needExp) break;     // 经验不够，先攒着
+
+            _playerStats.Exp -= needExp;               // 消耗该级所需经验（多余结转）
+            _playerStats.Level += 1;
+            _playerStats.SkillPoint += skillPoint;
+            leveledUp = true;
+
+            Debug.Log($"[CharacterStatsManager] 升级! 消耗经验{needExp} → Level={_playerStats.Level}, 技能点+{skillPoint}, 剩余经验={_playerStats.Exp}");
         }
 
         if (leveledUp)

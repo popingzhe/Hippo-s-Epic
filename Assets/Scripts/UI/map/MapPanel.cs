@@ -26,6 +26,8 @@ public class MapPanel : UIWindow
     private SceneMapId _pendingTargetMap;
     private SceneMapId _pendingCurrentMap;
     private bool _waitingForAnim;
+    private AnimationClip _pendingClip;
+    private float _animDeadline;
     public override UILayer Layer => UILayer.Popup;
 
     private void Update()
@@ -33,8 +35,25 @@ public class MapPanel : UIWindow
         if (!_waitingForAnim || headAnimator == null) return;
 
         var stateInfo = headAnimator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName(_pendingAnimState) && stateInfo.normalizedTime >= 1f)
+        bool clipPlaying = stateInfo.IsName(_pendingAnimState);
+        if (!clipPlaying && _pendingClip != null)
         {
+            // 兼容 state 名与 clip 名不一致的情况：按当前正在播放的 clip 判定
+            var infos = headAnimator.GetCurrentAnimatorClipInfo(0);
+            if (infos != null && infos.Length > 0 && infos[0].clip == _pendingClip)
+                clipPlaying = true;
+        }
+
+        bool finished = clipPlaying && stateInfo.normalizedTime >= 1f;
+        if (!finished && _animDeadline > 0f && Time.unscaledTime >= _animDeadline)
+        {
+            Debug.LogWarning($"[MapPanel] 过场动画未在预期时间内结束（clip={_pendingAnimState}），直接传送以免面板卡住");
+            finished = true;
+        }
+
+        if (finished)
+        {
+            _animDeadline = 0f;
             headAnimator.enabled = false;
             _waitingForAnim = false;
             TeleportToMap(_pendingTargetMap, _pendingCurrentMap);
@@ -185,6 +204,8 @@ public class MapPanel : UIWindow
             headAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
             headAnimator.Play(clip.name, 0, 0f);
             _pendingAnimState = clip.name;
+            _pendingClip = clip;
+            _animDeadline = Time.unscaledTime + clip.length + 1f;
             _pendingTargetMap = targetMap;
             _pendingCurrentMap = currentMap;
             _waitingForAnim = true;

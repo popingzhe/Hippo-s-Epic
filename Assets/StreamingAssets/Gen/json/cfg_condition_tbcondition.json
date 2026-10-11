@@ -478,5 +478,180 @@
     "dialogFinishId": [
       1006001
     ]
+  },
+  {
+    "id": 16,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 17,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 18,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 19,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 20,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 21,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 22,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
   }
 ]

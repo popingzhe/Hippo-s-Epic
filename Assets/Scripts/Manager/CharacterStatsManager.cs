@@ -14,6 +14,27 @@ public class CharacterStatsManager
 
     public event Action OnStatsChanged;
 
+    /// <summary>经验获得（参数 = 本次实际获得的经验，含加成）。</summary>
+    public event Action<int> OnExpGained;
+
+    /// <summary>经验发放版本号：每次发放 +1。用于跨场景补显示"发过但还没展示"的经验提示。</summary>
+    public int ExpGainVersion { get; private set; }
+
+    /// <summary>已被界面展示过的版本号（由显示组件展示后回写）。</summary>
+    public int LastShownExpVersion { get; private set; }
+
+    /// <summary>最近一次实际获得的经验（含加成）。</summary>
+    public int LastExpGain { get; private set; }
+
+    /// <summary>是否有"已发放但还没给玩家看过"的经验提示。</summary>
+    public bool HasPendingExpGain => ExpGainVersion != LastShownExpVersion;
+
+    /// <summary>标记当前版本的经验提示已展示。</summary>
+    public void MarkExpGainShown()
+    {
+        LastShownExpVersion = ExpGainVersion;
+    }
+
     public void InitFromConfig()
     {
         _playerStats = new CharacterStats();
@@ -111,10 +132,13 @@ public class CharacterStatsManager
 
         int actual = Mathf.RoundToInt(amount * _playerStats.ExpBonus);
         _playerStats.Exp += actual;
+        LastExpGain = actual;
+        ExpGainVersion++;
 
         CheckLevelUp();
         _playerStats.NotifyChanged();
         OnStatsChanged?.Invoke();
+        OnExpGained?.Invoke(actual);
 
         Debug.Log($"[CharacterStatsManager] 获得经验: {actual}(x{_playerStats.ExpBonus}), 总经验={_playerStats.Exp}, 等级={_playerStats.Level}");
     }

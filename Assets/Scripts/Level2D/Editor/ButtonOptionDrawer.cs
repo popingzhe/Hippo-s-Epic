@@ -17,6 +17,13 @@ public class ButtonOptionDrawer : PropertyDrawer
         new GUIContent("跨场景")
     };
 
+    private static readonly GUIContent[] SetStateLabels =
+    {
+        new GUIContent("覆盖为已满足"),
+        new GUIContent("覆盖为未满足"),
+        new GUIContent("清除覆盖(恢复条件表)")
+    };
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
@@ -89,18 +96,32 @@ public class ButtonOptionDrawer : PropertyDrawer
         else
         {
             bool isConsume = tt == InteractionType.Consume;
-            string idLabel = isConsume ? "物品ID" : "dataId";
-            string p1Label = isConsume ? "扣除数量" : "param1";
+            bool isSetCond = tt == InteractionType.SetCondition;
+            string idLabel = isConsume ? "物品ID" : (isSetCond ? "目标条件ID" : "dataId");
 
             dataIdProp.intValue = EditorGUI.IntField(
                 new Rect(position.x, y, w, lineH), idLabel, dataIdProp.intValue);
             y += lineH + sp;
 
-            param1Prop.stringValue = EditorGUI.TextField(
-                new Rect(position.x, y, w, lineH), p1Label, param1Prop.stringValue);
-            y += lineH + sp;
+            if (isSetCond)
+            {
+                string v = param1Prop.stringValue == null ? "" : param1Prop.stringValue.Trim().ToLowerInvariant();
+                int sel = (v == "0" || v == "false") ? 1 : (v == "clear" || v == "release" || v == "2") ? 2 : 0;
+                EditorGUI.BeginChangeCheck();
+                sel = EditorGUI.Popup(
+                    new Rect(position.x, y, w, lineH), new GUIContent("目标状态"), sel, SetStateLabels);
+                if (EditorGUI.EndChangeCheck())
+                    param1Prop.stringValue = sel == 1 ? "0" : (sel == 2 ? "clear" : "1");
+                y += lineH + sp;
+            }
+            else
+            {
+                param1Prop.stringValue = EditorGUI.TextField(
+                    new Rect(position.x, y, w, lineH), isConsume ? "扣除数量" : "param1", param1Prop.stringValue);
+                y += lineH + sp;
+            }
 
-            if (!isConsume)
+            if (!isConsume && !isSetCond)
             {
                 param2Prop.stringValue = EditorGUI.TextField(
                     new Rect(position.x, y, w, lineH), "param2", param2Prop.stringValue);
@@ -247,7 +268,7 @@ public class ButtonOptionDrawer : PropertyDrawer
         {
             lines += 3;
         }
-        else if (tt == InteractionType.Consume)
+        else if (tt == InteractionType.Consume || tt == InteractionType.SetCondition)
         {
             lines += 2;
         }

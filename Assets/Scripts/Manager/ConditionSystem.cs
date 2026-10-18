@@ -20,6 +20,10 @@ public class ConditionSystem
 
     private readonly Dictionary<int, bool> _cache = new Dictionary<int, bool>();
 
+    // 覆盖层：由交互(SetCondition)等强制设置。优先级最高——存在覆盖时一律以覆盖值为准，
+    // 数据变化触发的 Notify 重算对该条件直接跳过。
+    private readonly Dictionary<int, bool> _overrides = new Dictionary<int, bool>();
+
     private readonly Dictionary<ConditionChangeType, HashSet<int>> _fieldIndex
         = new Dictionary<ConditionChangeType, HashSet<int>>();
 
@@ -55,6 +59,7 @@ public class ConditionSystem
         BuildIndex(tables);
 
         _cache.Clear();
+        _overrides.Clear();
         foreach (var cond in tables.TbCondition.DataList)
         {
             _cache[cond.Id] = EvaluateCondition(cond);
@@ -90,6 +95,10 @@ public class ConditionSystem
 
     public bool IsConditionMet(int conditionId)
     {
+        // 覆盖层优先：被强制设置过的条件不再按条件表推算
+        if (_overrides.TryGetValue(conditionId, out bool forced))
+            return forced;
+
         if (_cache.TryGetValue(conditionId, out bool met))
             return met;
 
@@ -103,11 +112,74 @@ public class ConditionSystem
         return result;
     }
 
+    /// <summary>强制设置条件并**保留覆盖**（优先级高于条件表推算，Notify 重算不会冲掉它）。</summary>
     public void ForceSetCondition(int conditionId, bool met)
     {
+        _overrides[conditionId] = met;
         _cache[conditionId] = met;
         OnConditionChanged?.Invoke(conditionId, met);
-        Debug.Log($"[ConditionSystem] 强制设置条件 {conditionId} = {met}");
+        Debug.Log($"[ConditionSystem] 强制设置条件 {conditionId} = {met}（覆盖，优先于条件表）");
+    }
+
+    /// <summary>清除某条件的覆盖，恢复按条件表推算（并立即重算一次）。</summary>
+    public void ClearOverride(int conditionId)
+    {
+        if (!_overrides.Remove(conditionId)) return;
+
+        var tables = ManagerRegistry.GetTables<cfg.Tables>();
+        var cond = tables?.TbCondition.GetOrDefault(conditionId);
+        bool re = cond != null ? EvaluateCondition(cond) : false;
+        bool old = _cache.TryGetValue(conditionId, out bool c) && c;
+        _cache[conditionId] = re;
+
+        Debug.Log($"[ConditionSystem] 清除条件 {conditionId} 的覆盖，重算为 {re}");
+        if (old != re)
+            OnConditionChanged?.Invoke(conditionId, re);
+    }
+
+    /// <summary>该条件当前是否处于覆盖状态（调试/工具用）。</summary>
+    public bool HasOverride(int conditionId) => _overrides.ContainsKey(conditionId);
+
+    /// <summary>调试用：一句话说明该条件的条件表数据（物品/任务/特质/战斗/对话）。</summary>
+    public string GetConditionBrief(int conditionId)
+    {
+        var tables = ManagerRegistry.GetTables<cfg.Tables>();
+        var cond = tables?.TbCondition.GetOrDefault(conditionId);
+        if (cond == null) return "(条件表无此 id)";
+
+        var sb = new System.Text.StringBuilder();
+        if (cond.HasItem != null && cond.HasItem.Count > 0)
+        {
+            sb.Append("物品");
+            foreach (var p in cond.HasItem) sb.Append($"[{p[0]}×{p[1]}]");
+            sb.Append(' ');
+        }
+        if (cond.TaskState != null && cond.TaskState.Count > 0)
+        {
+            sb.Append("任务");
+            foreach (var p in cond.TaskState) sb.Append($"[{p[0]}→{p[1]}]");
+            sb.Append(' ');
+        }
+        if (cond.HasPerkId != null && cond.HasPerkId.Count > 0)
+        {
+            sb.Append("特质");
+            foreach (var p in cond.HasPerkId) sb.Append($"[{p}]");
+            sb.Append(' ');
+        }
+        if (cond.BattleId != null && cond.BattleId.Count > 0)
+        {
+            sb.Append("战斗");
+            foreach (var p in cond.BattleId) sb.Append($"[{p[0]}→{p[1]}]");
+            sb.Append(' ');
+        }
+        if (cond.DialogFinishId != null && cond.DialogFinishId.Count > 0)
+        {
+            sb.Append("对话");
+            foreach (var p in cond.DialogFinishId) sb.Append($"[{p}]");
+            sb.Append(' ');
+        }
+        if (sb.Length == 0) sb.Append("(无数据限制)");
+        return sb.ToString();
     }
 
     public List<int> GetAllConditionIds()
@@ -122,8 +194,9 @@ public class ConditionSystem
         var cond = tables?.TbCondition.GetOrDefault(conditionId);
         if (cond == null) return $"条件 {conditionId} 不存在";
 
-        bool met = _cache.TryGetValue(conditionId, out bool v) && v;
-        return $"ID:{conditionId} | {(met ? "<color=green>已满足</color>" : "<color=red>未满足</color>")}";
+        bool met = IsConditionMet(conditionId);
+        string tag = _overrides.ContainsKey(conditionId) ? " <color=orange>[已覆盖]</color>" : "";
+        return $"ID:{conditionId} | {(met ? "<color=green>已满足</color>" : "<color=red>未满足</color>")}{tag}";
     }
 
     public void Notify(ConditionChangeType changeType)
@@ -135,6 +208,8 @@ public class ConditionSystem
 
         foreach (int condId in conditionIds)
         {
+            if (_overrides.ContainsKey(condId)) continue;   // 被覆盖的条件不重算（覆盖优先）
+
             var cond = tables.TbCondition.GetOrDefault(condId);
             if (cond == null) continue;
 

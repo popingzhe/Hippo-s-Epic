@@ -534,9 +534,51 @@ public class Interactable : MonoBehaviour
             case InteractionType.Teleport:
                 ExecuteTeleport(button);
                 break;
+
+            case InteractionType.SetCondition:
+                ExecuteSetCondition(button);
+                break;
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// 修改条件满足情况：dataId=条件ID，param1=目标状态。
+    ///   1/true/空  = 覆盖为"已满足"
+    ///   0/false    = 覆盖为"未满足"
+    ///   clear/2    = 清除覆盖，恢复按条件表判定
+    /// 覆盖优先级最高：写入后不会再被数据变化触发的 Notify 重算冲掉，重启游戏(Initialize)才清空。
+    /// </summary>
+    private void ExecuteSetCondition(ButtonOption button)
+    {
+        int condId = button.dataId;
+        if (condId == 0)
+        {
+            Debug.LogWarning($"[Interactable] {EntityId} SetCondition 未指定条件ID（dataId=0）");
+            return;
+        }
+
+        var condSys = ConditionSystem.HasInstance ? ConditionSystem.Instance : null;
+        if (condSys == null)
+        {
+            Debug.LogWarning($"[Interactable] {EntityId} ConditionSystem 不存在，条件 {condId} 未修改");
+            return;
+        }
+
+        string v = string.IsNullOrEmpty(button.param1) ? "" : button.param1.Trim().ToLowerInvariant();
+
+        // param1 = clear / release / 2 ⇒ 清除覆盖，恢复按条件表判定
+        if (v == "clear" || v == "release" || v == "2")
+        {
+            condSys.ClearOverride(condId);
+            Debug.Log($"[Interactable] {EntityId} 触发：清除条件 {condId} 的覆盖");
+            return;
+        }
+
+        bool target = !(v == "0" || v == "false");
+        condSys.ForceSetCondition(condId, target);
+        Debug.Log($"[Interactable] {EntityId} 触发：条件 {condId} 覆盖为{(target ? "已满足" : "未满足")}（优先于条件表）");
     }
 
     private void ExecuteDialogue(ButtonOption button)

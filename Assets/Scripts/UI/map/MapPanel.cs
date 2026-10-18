@@ -115,6 +115,7 @@ public class MapPanel : UIWindow
         {
             SceneMapId currentMap = GetCurrentSceneMapId();
             _currentMapRoot.Initialize(OnNodeClicked);
+            _currentMapRoot.ApplyConditionVisibility();   // 条件不满足的节点隐藏
             PositionHead(currentMap);
         }
     }

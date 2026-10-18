@@ -70,6 +70,27 @@ public class MapRoot : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 按条件刷新节点可见性：conditionId == 0 视为不限制；条件不满足的节点直接隐藏（SetActive(false)）。
+    /// 每次打开地图面板都会调一次（条件会随任务/道具/对话进度变化）。
+    /// </summary>
+    public void ApplyConditionVisibility()
+    {
+        if (nodes == null) return;
+
+        var condSys = ConditionSystem.HasInstance ? ConditionSystem.Instance : null;
+
+        foreach (var entry in nodes)
+        {
+            if (entry == null || entry.button == null) continue;
+
+            bool visible = entry.conditionId == 0
+                           || (condSys != null && condSys.IsConditionMet(entry.conditionId));
+
+            entry.button.gameObject.SetActive(visible);
+        }
+    }
+
     public int GetConditionId(SceneMapId mapId)
     {
         if (nodes == null) return 0;

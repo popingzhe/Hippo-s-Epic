@@ -255,6 +255,11 @@ public class UIManager : MonoBehaviour
             canvas.sortingLayerID = rootCanvas.sortingLayerID;
         }
 
+        // 关键：子 Canvas 里的图形只归它自己的 GraphicRaycaster 管，父级 raycaster 看不到。
+        // 不补这个，窗口内所有按钮都会失去点击（"开始游戏"点不动就是这个原因）。
+        if (window.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+            window.gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
         canvas.overrideSorting = true;
         canvas.sortingOrder = (int)window.Layer;
 

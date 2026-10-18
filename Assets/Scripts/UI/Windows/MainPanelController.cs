@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class MainPanelController : UIWindow
 {
+    public override UILayer Layer => UILayer.Hud;   // HUD 常驻底栏：永远在所有面板之下
+
     [SerializeField] private Button _btnRole;
     [SerializeField] private Button _btnBag;
     [SerializeField] private Button _btnMap;

@@ -623,7 +623,12 @@
         5
       ]
     ],
-    "hasItem": [],
+    "hasItem": [
+      [
+        100,
+        1
+      ]
+    ],
     "taskState": [],
     "hasPerkId": [],
     "battleId": [],
@@ -631,6 +636,61 @@
   },
   {
     "id": 22,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [
+      [
+        100,
+        1
+      ]
+    ],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 23,
+    "composeType": [
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        0
+      ],
+      [
+        5
+      ]
+    ],
+    "hasItem": [],
+    "taskState": [],
+    "hasPerkId": [],
+    "battleId": [],
+    "dialogFinishId": []
+  },
+  {
+    "id": 24,
     "composeType": [
       [
         0

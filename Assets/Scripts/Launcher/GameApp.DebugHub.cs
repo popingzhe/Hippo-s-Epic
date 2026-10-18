@@ -9,6 +9,8 @@ public partial class GameApp
     [SerializeField] private bool debugEnableHub = true;
     [Tooltip("F1 切换显示/隐藏")]
     [SerializeField] private bool debugHubHotkey = true;
+    [Tooltip("条件调试 Tab（实时状态 + 覆盖标记 + 覆盖操作）")]
+    [SerializeField] private bool debugEnableConditionTest = true;
 
     #endregion
 
@@ -19,10 +21,11 @@ public partial class GameApp
         Dialog = 0,
         Animation = 1,
         Bag = 2,
-        Battle = 3
+        Battle = 3,
+        Condition = 4
     }
 
-    private static readonly string[] HubTabNames = { "对话", "动画", "背包", "战斗" };
+    private static readonly string[] HubTabNames = { "对话", "动画", "背包", "战斗", "条件" };
 
     private DebugHubTab _hubTab = DebugHubTab.Dialog;
     private bool _hubMinimized;
@@ -36,6 +39,8 @@ public partial class GameApp
     private Texture2D _hubBtnHoverTex;
     private Texture2D _hubTabOnTex;
     private Texture2D _hubTabOffTex;
+    private Vector2 _hubCondScroll;
+    private string _hubCondSearch = "";
 
     #endregion
 
@@ -43,7 +48,7 @@ public partial class GameApp
     {
         if (!debugEnableHub) return;
         if (!debugEnableDialogTest && !debugEnableAnimationTest
-            && !debugEnableBagTest && !debugEnableBattleTest)
+            && !debugEnableBagTest && !debugEnableBattleTest && !debugEnableConditionTest)
             return;
 
         if (debugHubHotkey && Event.current.type == EventType.KeyDown
@@ -116,6 +121,7 @@ public partial class GameApp
         DrawHubTab(DebugHubTab.Animation, debugEnableAnimationTest, btn, s);
         DrawHubTab(DebugHubTab.Bag, debugEnableBagTest, btn, s);
         DrawHubTab(DebugHubTab.Battle, debugEnableBattleTest, btn, s);
+        DrawHubTab(DebugHubTab.Condition, debugEnableConditionTest, btn, s);
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
 
@@ -141,6 +147,10 @@ public partial class GameApp
                 if (debugEnableBattleTest) DrawBattleTestContent(lbl, btn, fld, s);
                 else GUILayout.Label("战斗调试未启用（Inspector 勾选）", lbl);
                 break;
+            case DebugHubTab.Condition:
+                if (debugEnableConditionTest) DrawConditionTestContent(lbl, btn, fld, s);
+                else GUILayout.Label("条件调试未启用（Inspector 勾选）", lbl);
+                break;
         }
         GUILayout.EndArea();
 
@@ -159,6 +169,72 @@ public partial class GameApp
         {
             _hubResizing = false;
         }
+    }
+
+    /// <summary>条件调试：实时列出全部条件（状态按 IsConditionMet 现算，覆盖用橙色标记），可直接覆盖/清覆盖。</summary>
+    private void DrawConditionTestContent(GUIStyle lbl, GUIStyle btn, GUIStyle fld, float s)
+    {
+        var cs = ConditionSystem.HasInstance ? ConditionSystem.Instance : null;
+        if (cs == null)
+        {
+            GUILayout.Label("ConditionSystem 尚未创建（未开始游戏）", lbl);
+            return;
+        }
+
+        var ids = cs.GetAllConditionIds();
+        int metCount = 0, ovCount = 0;
+        for (int i = 0; i < ids.Count; i++)
+        {
+            if (cs.IsConditionMet(ids[i])) metCount++;
+            if (cs.HasOverride(ids[i])) ovCount++;
+        }
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label($"共 {ids.Count} 条 | <color=#7CFC7C>已满足 {metCount}</color> | <color=#FFD24D>覆盖中 {ovCount}</color>", lbl);
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("全部清覆盖", btn, GUILayout.Width(110 * s)))
+        {
+            for (int i = 0; i < ids.Count; i++)
+                if (cs.HasOverride(ids[i])) cs.ClearOverride(ids[i]);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("筛选(ID)", lbl, GUILayout.Width(80 * s));
+        _hubCondSearch = GUILayout.TextField(_hubCondSearch, fld, GUILayout.Width(90 * s));
+        GUILayout.Label("（状态每帧实时计算，无需刷新）", lbl);
+        GUILayout.EndHorizontal();
+
+        _hubCondScroll = GUILayout.BeginScrollView(_hubCondScroll);
+
+        for (int i = 0; i < ids.Count; i++)
+        {
+            int id = ids[i];
+            if (!string.IsNullOrEmpty(_hubCondSearch) && !id.ToString().Contains(_hubCondSearch))
+                continue;
+
+            bool met = cs.IsConditionMet(id);
+            bool ov = cs.HasOverride(id);
+
+            GUILayout.BeginHorizontal();
+            string state = met ? "<color=#7CFC7C><b>已满足</b></color>" : "<color=#FF8080><b>未满足</b></color>";
+            string tag = ov ? " <color=#FFD24D>[覆盖]</color>" : "";
+            GUILayout.Label($"<b>{id}</b>  {state}{tag}  {cs.GetConditionBrief(id)}", lbl);
+
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("满足", btn, GUILayout.Width(56 * s)))
+                cs.ForceSetCondition(id, true);
+            if (GUILayout.Button("未满足", btn, GUILayout.Width(66 * s)))
+                cs.ForceSetCondition(id, false);
+            if (ov)
+            {
+                if (GUILayout.Button("清覆盖", btn, GUILayout.Width(76 * s)))
+                    cs.ClearOverride(id);
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        GUILayout.EndScrollView();
     }
 
     private void DrawHubTab(DebugHubTab tab, bool enabled, GUIStyle btn, float s)

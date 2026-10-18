@@ -77,13 +77,19 @@ public class ConditionDebuggerWindow : EditorWindow
             if (!string.IsNullOrEmpty(_search) && !id.ToString().Contains(_search))
                 continue;
 
-            var info = ConditionSystem.Instance.GetConditionInfo(id);
+            var info = ConditionSystem.Instance.GetConditionInfo(id)
+                     + "  " + ConditionSystem.Instance.GetConditionBrief(id);
             EditorGUILayout.BeginHorizontal("box");
             EditorGUILayout.LabelField(info, GUILayout.ExpandWidth(true));
-            if (GUILayout.Button("激活", GUILayout.Width(50)))
+            if (GUILayout.Button("满足", GUILayout.Width(50)))
                 ConditionSystem.Instance.ForceSetCondition(id, true);
-            if (GUILayout.Button("关闭", GUILayout.Width(50)))
+            if (GUILayout.Button("未满足", GUILayout.Width(58)))
                 ConditionSystem.Instance.ForceSetCondition(id, false);
+            if (ConditionSystem.Instance.HasOverride(id))
+            {
+                if (GUILayout.Button("清覆盖", GUILayout.Width(58)))
+                    ConditionSystem.Instance.ClearOverride(id);
+            }
             EditorGUILayout.EndHorizontal();
         }
 

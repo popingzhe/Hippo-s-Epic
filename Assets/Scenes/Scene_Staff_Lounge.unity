@@ -3958,6 +3958,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4873974296571241699}
     m_Modifications:
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].hintText
+      value: "\u4F60\u5728\u67DC\u5B50\u91CC\u627E\u5230\u4E86\u77F3\u818F\u62F3\u5957"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].canRepeat
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].hideAfterExecute
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].buttons.Array.data[0].type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].buttons.Array.data[0].dataId
+      value: 1008
+      objectReference: {fileID: 0}
     - target: {fileID: 5373044614434932604, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: m_Name
       value: sever
@@ -4271,6 +4291,7 @@ MonoBehaviour:
     hideAfterExecute: 0
     destroySelf: 0
     deactivateSelf: 0
+    autoTriggerFirstButton: 0
     _legacyType: 3
     _legacyHintButton: E
     _legacyDataId: 0
@@ -5388,8 +5409,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].autoTriggerFirstButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].buttons.Array.data[0].type
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].buttons.Array.data[0].dataId
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].buttonText
-      value: 
+      value: E
       objectReference: {fileID: 0}
     - target: {fileID: 5373044614434932604, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: m_Name
@@ -5926,11 +5959,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].state
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].state
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].hintText
@@ -5941,12 +5978,20 @@ PrefabInstance:
       value: "\u771F\u65E0\u804A\uFF0C\u539F\u6765\u4ED6\u53EA\u559D\u81EA\u6765\u6C34\uFF0C\u602A\u4E0D\u5F97\u4ED6\u7684\u7259\u9F7F\u8FD9\u4E48\u6F02\u4EAE\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].hintText
+      value: "\u4F60\u786E\u5B9A\u5417\uFF1F\u8FD9\u6837\u53EF\u80FD\u4F1A\u8BA9\u4E8B\u60C5\u5F88\u96BE\u529E\u54E6\u3002"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].canRepeat
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].canRepeat
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].canRepeat
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].destroySelf
@@ -5962,7 +6007,71 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].buttons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[0].type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[1].type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[2].type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[0].type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[1].type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].activeChildNames.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[1].dataId
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[1].param1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[2].dataId
+      value: 1003
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[2].param1
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[0].dataId
+      value: 1003
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[0].param1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[1].dataId
+      value: 1003
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[1].param1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].activeChildNames.Array.data[0]
+      value: Disabled
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].buttonText
@@ -5977,11 +6086,43 @@ PrefabInstance:
       value: "\u597D\u5427\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[1].buttonText
+      value: "\u7ED9\u4ED6\u4E0B\u836F"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[2].buttonText
+      value: "\u7ED9\u4ED6\u4E0B\u836F"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[0].buttonText
+      value: "\u6211\u5C31\u8981\u4E0B\uFF01"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[1].buttonText
+      value: "\u6211\u4E3A\u4EC0\u4E48\u4E0D\u81EA\u5DF1\u5C1D\u5C1D\u5462\uFF1F"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].transitionToState
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].buttons.Array.data[0].transitionToState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[1].transitionToState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[1].buttons.Array.data[2].transitionToState
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[0].transitionToState
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[2].buttons.Array.data[1].transitionToState
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5373044614434932604, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
@@ -6262,6 +6403,7 @@ MonoBehaviour:
     hideAfterExecute: 0
     destroySelf: 0
     deactivateSelf: 0
+    autoTriggerFirstButton: 0
     _legacyType: 3
     _legacyHintButton: E
     _legacyDataId: 0
@@ -6378,7 +6520,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.size
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].state
@@ -6401,6 +6543,14 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[5].state
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[6].state
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].hintText
       value: "\u4ED6\u6839\u672C\u6CA1\u5728\u770B\u4F60\uFF0C\u53EF\u80FD\u8FD9\u5E76\u4E0D\u662F\u597D\u4E8B\uFF0C\u56E0\u4E3A\u6216\u8BB8\u610F\u5473\u7740\u4F60\u7684\u80DC\u7B97\u548C\u65C1\u8FB9\u5783\u573E\u888B\u7684\u80DC\u7B97\u5DEE\u4E0D\u591A\u3002"
       objectReference: {fileID: 0}
@@ -6421,6 +6571,14 @@ PrefabInstance:
       value: "\u5929\u54EA\uFF0C\u4F60\u88AB\u6253\u7684\u771F\u7684\u592A\u60E8\u4E86\uFF0C\u4ED6\u4EEC\u82B1\u4E86\u51E0\u4E2A\u5C0F\u65F6\u624D\u628A\u4F60\u88AB\u6253\u98DE\u7684\u7259\u627E\u56DE\u6765\uFF0C\u5F53\u7136\u5B83\u53EF\u80FD\u4E0D\u4F1A\u518D\u50CF\u4E4B\u524D\u90A3\u4E48\u597D\u4E86\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[5].hintText
+      value: "\u6559\u7EC3\u6B63\u5728\u70ED\u8EAB\uFF0C\u51C6\u5907\u4E0A\u573A\u548C\u62F3\u738B\u4E00\u51B3\u9AD8\u4E0B\u4E86\u3002"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[6].hintText
+      value: "\u4F60\u51C6\u5907\u7528\u77F3\u818F\u62F3\u5957\u4E0A\u53BB\u63CD\u4EBA\u4E86\uFF0C\u4F60\u8FD9\u6B21\u641E\u4E86\u70B9\u5C0F\u624B\u6BB5\u3002"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].canRepeat
       value: 1
       objectReference: {fileID: 0}
@@ -6434,6 +6592,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[4].canRepeat
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[5].canRepeat
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[6].canRepeat
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
@@ -6461,6 +6627,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[5].buttons.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[6].buttons.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].animationController
       value: 
       objectReference: {fileID: 185174480}
@@ -6470,7 +6644,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].conditionTriggers.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].conditionTriggers.Array.size
@@ -6482,6 +6656,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[3].conditionTriggers.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[5].conditionTriggers.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
@@ -6513,12 +6691,28 @@ PrefabInstance:
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[5].buttons.Array.data[0].transitionToState
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[6].buttons.Array.data[0].transitionToState
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].conditionTriggers.Array.data[0].conditionId
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].conditionTriggers.Array.data[1].conditionId
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].conditionTriggers.Array.data[2].conditionId
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].conditionTriggers.Array.data[3].conditionId
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].conditionTriggers.Array.data[0].conditionId
@@ -6543,6 +6737,14 @@ PrefabInstance:
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].conditionTriggers.Array.data[1].transitionToState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].conditionTriggers.Array.data[2].transitionToState
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].conditionTriggers.Array.data[3].transitionToState
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[1].conditionTriggers.Array.data[0].transitionToState
@@ -6922,6 +7124,7 @@ MonoBehaviour:
     hideAfterExecute: 0
     destroySelf: 0
     deactivateSelf: 0
+    autoTriggerFirstButton: 0
     _legacyType: 0
     _legacyHintButton: 
     _legacyDataId: 0

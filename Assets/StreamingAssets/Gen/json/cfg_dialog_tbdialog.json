@@ -213,5 +213,78 @@
     "condition_ids": [
       0
     ]
+  },
+  {
+    "id": 1007001,
+    "type": 1,
+    "param1": [
+      1007002
+    ],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": [
+      0
+    ]
+  },
+  {
+    "id": 1007002,
+    "type": 2,
+    "param1": [
+      1007003,
+      1007004,
+      1007005
+    ],
+    "param2": "1|1|1",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": [
+      0,
+      23,
+      24
+    ]
+  },
+  {
+    "id": 1007003,
+    "type": 1,
+    "param1": [],
+    "param2": "",
+    "selection_name": "我什么都没拿到",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": [
+      0
+    ]
+  },
+  {
+    "id": 1007004,
+    "type": 1,
+    "param1": [],
+    "param2": "",
+    "selection_name": "我找到牙了",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": [
+      0
+    ]
+  },
+  {
+    "id": 1007005,
+    "type": 1,
+    "param1": [],
+    "param2": "",
+    "selection_name": "我找到了这份报道",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": [
+      0
+    ]
   }
 ]

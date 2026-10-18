@@ -10,5 +10,17 @@
     "name": "我是谁？我在哪儿？",
     "shorttext": "你不知道该干什么，问下前面这个长得像骨裂的人吧。",
     "longtext": ""
+  },
+  {
+    "id": 3,
+    "type": 1,
+    "state": 2,
+    "nodeseq": [
+      6
+    ],
+    "conditionid": 0,
+    "name": "拳赛继续办！",
+    "shorttext": "去想各种办法让拳赛开起来。",
+    "longtext": ""
   }
 ]

@@ -4930,6 +4930,10 @@ PrefabInstance:
       value: "\u5E0C\u671B\u5176\u4ED6\u4EBA\u80FD\u8BA4\u8BC6\u5230\u7816\u6DF7\u7ED3\u6784\u7684\u5F3A\u5EA6\u6709\u95EE\u9898\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: b9c891ff271779b4eafd6ef51a3e6fc8, type: 3}
+      propertyPath: phases.Array.data[0].autoTriggerFirstButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: b9c891ff271779b4eafd6ef51a3e6fc8, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].param1
       value: trans_trans_to_inside
       objectReference: {fileID: 0}

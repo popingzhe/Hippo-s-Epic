@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class BagPanel : UIWindow
 {
+    public override string ExclusiveGroup => "MainPanels";   // 背包与任务面板互斥，同时只显示一个
+
     [Header("穿戴展示")]
     [SerializeField] private Image wearLeftHand;
     [SerializeField] private Image wearRightHand;

@@ -43,6 +43,7 @@ public class UIManager : MonoBehaviour
 
         if (windowMap.TryGetValue(key, out var window))
         {
+            CloseExclusivePeers(window);
             PlaceWindow(window);
             window.gameObject.SetActive(true);
 
@@ -103,6 +104,7 @@ public class UIManager : MonoBehaviour
         }
 
         windowMap[key] = window;
+        CloseExclusivePeers(window);
         PlaceWindow(window);
 
         if (pendingClose.Contains(key))
@@ -126,8 +128,11 @@ public class UIManager : MonoBehaviour
 
     public void Close<T>() where T : UIWindow
     {
-        string key = typeof(T).FullName;
+        CloseInternal(typeof(T).FullName);
+    }
 
+    private void CloseInternal(string key)
+    {
         if (!windowMap.TryGetValue(key, out var window))
         {
             pendingClose.Add(key);
@@ -139,6 +144,25 @@ public class UIManager : MonoBehaviour
         windowMap.Remove(key);
         createdSet.Remove(key);
         ReleaseHandle(key);
+    }
+
+    /// <summary>
+    /// 互斥组：关掉同组内其它已打开的窗口（后开的顶掉先开的）。
+    /// 组名由 UIWindow.ExclusiveGroup 声明，空组不参与互斥。
+    /// </summary>
+    private void CloseExclusivePeers(UIWindow opening)
+    {
+        if (opening == null) return;
+        string group = opening.ExclusiveGroup;
+        if (string.IsNullOrEmpty(group)) return;
+
+        foreach (var kvp in new List<KeyValuePair<string, UIWindow>>(windowMap))
+        {
+            var other = kvp.Value;
+            if (other == null || other == opening) continue;
+            if (other.ExclusiveGroup == group)
+                CloseInternal(kvp.Key);
+        }
     }
 
     public bool IsOpen<T>() where T : UIWindow
@@ -262,6 +286,15 @@ public class UIManager : MonoBehaviour
 
         canvas.overrideSorting = true;
         canvas.sortingOrder = (int)window.Layer;
+
+        // UI 窗口内的 Animator 统一用独立时间：开背包/任务面板时 timeScale=0，
+        // 默认 updateMode=Normal 会让 UI 动画冻住（MapPanel 的 head 也做了同样处理）
+        var animators = window.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            if (animators[i] != null && animators[i].updateMode != AnimatorUpdateMode.UnscaledTime)
+                animators[i].updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
 
         var rect = window.transform as RectTransform;
         if (rect != null)

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class TaskPanel : UIWindow
 {
+    public override string ExclusiveGroup => "MainPanels";   // 背包与任务面板互斥，同时只显示一个
+
     [SerializeField] private GameObject itemCell;
     [SerializeField] private GameObject cellContent;
     [SerializeField] private ScrollRect sv;

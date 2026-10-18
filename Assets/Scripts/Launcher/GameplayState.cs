@@ -127,11 +127,13 @@ public class GameplayState : IGameState
 
     public void OpenBagPublic()
     {
+        if (_taskOpen) CloseTask();     // 互斥：任务面板先关（其后 OpenBag 会重新设 timeScale/输入，幂等）
         if (!_bagOpen) OpenBag();
     }
 
     public void OpenTaskPublic()
     {
+        if (_bagOpen) CloseBag();       // 互斥：背包先关
         if (!_taskOpen) OpenTask();
     }
 

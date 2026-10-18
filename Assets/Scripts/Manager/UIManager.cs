@@ -263,6 +263,15 @@ public class UIManager : MonoBehaviour
         canvas.overrideSorting = true;
         canvas.sortingOrder = (int)window.Layer;
 
+        // UI 窗口内的 Animator 统一用独立时间：开背包/任务面板时 timeScale=0，
+        // 默认 updateMode=Normal 会让 UI 动画冻住（MapPanel 的 head 也做了同样处理）
+        var animators = window.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            if (animators[i] != null && animators[i].updateMode != AnimatorUpdateMode.UnscaledTime)
+                animators[i].updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
+
         var rect = window.transform as RectTransform;
         if (rect != null)
         {

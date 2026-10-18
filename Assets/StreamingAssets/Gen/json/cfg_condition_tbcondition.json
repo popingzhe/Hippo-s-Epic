@@ -502,7 +502,9 @@
     "taskState": [],
     "hasPerkId": [],
     "battleId": [],
-    "dialogFinishId": []
+    "dialogFinishId": [
+      1007003
+    ]
   },
   {
     "id": 17,
@@ -608,7 +610,8 @@
     "id": 21,
     "composeType": [
       [
-        0
+        1,
+        2
       ],
       [
         0
@@ -620,7 +623,7 @@
         0
       ],
       [
-        5
+        0
       ]
     ],
     "hasItem": [
@@ -638,7 +641,8 @@
     "id": 22,
     "composeType": [
       [
-        0
+        1,
+        2
       ],
       [
         0
@@ -650,7 +654,7 @@
         0
       ],
       [
-        5
+        0
       ]
     ],
     "hasItem": [
@@ -683,7 +687,12 @@
         5
       ]
     ],
-    "hasItem": [],
+    "hasItem": [
+      [
+        1004,
+        1
+      ]
+    ],
     "taskState": [],
     "hasPerkId": [],
     "battleId": [],
@@ -708,7 +717,12 @@
         5
       ]
     ],
-    "hasItem": [],
+    "hasItem": [
+      [
+        1002,
+        1
+      ]
+    ],
     "taskState": [],
     "hasPerkId": [],
     "battleId": [],

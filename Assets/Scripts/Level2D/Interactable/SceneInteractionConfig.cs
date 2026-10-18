@@ -36,6 +36,9 @@ public class InteractionPhase
     [Tooltip("交互后禁用此GameObject（SetActive(false)）")]
     public bool deactivateSelf;
 
+    [Tooltip("勾选后：玩家进入交互范围时，直接触发本阶段第一个可用按钮（等同玩家点了它），不再等待按键/点击。\n无可用按钮（条件都不满足）时不触发。")]
+    public bool autoTriggerFirstButton;
+
     [HideInInspector]
     [SerializeField]
     private InteractionType _legacyType;

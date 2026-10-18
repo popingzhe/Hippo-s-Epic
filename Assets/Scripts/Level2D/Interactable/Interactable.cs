@@ -190,6 +190,9 @@ public class Interactable : MonoBehaviour
             InitializeHint();
 
         RefreshHint();
+
+        // 本阶段勾选了"自动触发第一个按钮"：进入范围就直接执行，不等玩家按键
+        TryAutoTriggerFirstButton();
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -646,6 +649,33 @@ public class Interactable : MonoBehaviour
     {
         if (ConditionSystem.HasInstance)
             ConditionSystem.Instance.OnConditionChanged -= OnConditionChanged;
+    }
+
+    /// <summary>
+    /// 进入交互范围时：本阶段勾选了自动触发就直接执行第一个可用按钮（等同玩家点了它）。
+    /// "可用" = 按钮无条件，或条件已满足（与提示 UI 的显示规则一致）。
+    /// </summary>
+    private void TryAutoTriggerFirstButton()
+    {
+        if (_currentPhase == null || !_currentPhase.autoTriggerFirstButton) return;
+
+        var buttons = _currentPhase.buttons;
+        if (buttons == null || buttons.Count == 0) return;
+
+        var condSys = ConditionSystem.HasInstance ? ConditionSystem.Instance : null;
+
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            int condId = buttons[i].conditionId;
+            if (condId != 0 && (condSys == null || !condSys.IsConditionMet(condId)))
+                continue;
+
+            Debug.Log($"[Interactable] {EntityId} 进入范围自动触发按钮{i}（{buttons[i].type}）");
+            OnPlayerExecute(i);
+            return;
+        }
+
+        Debug.LogWarning($"[Interactable] {EntityId} 勾选了自动触发，但当前没有可用按钮（条件都不满足），已跳过");
     }
 
     private void OnConditionChanged(int conditionId, bool isMet)

@@ -44,6 +44,7 @@ public class InteractableEditor : Editor
         var hideAfterExecuteProp = phase.FindPropertyRelative("hideAfterExecute");
         var destroySelfProp = phase.FindPropertyRelative("destroySelf");
         var deactivateSelfProp = phase.FindPropertyRelative("deactivateSelf");
+        var autoTriggerProp = phase.FindPropertyRelative("autoTriggerFirstButton");
 
         EditorGUILayout.BeginHorizontal();
         phase.isExpanded = EditorGUILayout.Foldout(phase.isExpanded, $"Phase {stateProp.intValue}", true, EditorStyles.boldLabel);
@@ -95,6 +96,9 @@ public class InteractableEditor : Editor
         EditorGUILayout.PropertyField(hideAfterExecuteProp);
         EditorGUILayout.PropertyField(destroySelfProp);
         EditorGUILayout.PropertyField(deactivateSelfProp);
+
+        EditorGUILayout.Space(2);
+        EditorGUILayout.PropertyField(autoTriggerProp, new GUIContent("进入范围自动触发第一个按钮", "勾选后：玩家进入交互范围时直接触发本阶段第一个可用按钮，不等按键/点击"));
 
         EditorGUI.indentLevel--;
 

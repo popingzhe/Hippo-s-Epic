@@ -29,6 +29,8 @@ public sealed partial class Buff : Luban.BeanBase
         Param1 = _buf.ReadInt();
         Trigger = _buf.ReadInt();
         Param2 = _buf.ReadInt();
+        Gaintip = _buf.ReadString();
+        Gainbtn = _buf.ReadString();
     }
 
     public static Buff DeserializeBuff(ByteBuf _buf)
@@ -88,6 +90,14 @@ public sealed partial class Buff : Luban.BeanBase
     /// 第二参数
     /// </summary>
     public readonly int Param2;
+    /// <summary>
+    /// 获得该buff时提示框的文本内容（空=用buff名称+描述）
+    /// </summary>
+    public readonly string Gaintip;
+    /// <summary>
+    /// 获得该buff时提示框按钮上的文字（空=“确定”）
+    /// </summary>
+    public readonly string Gainbtn;
    
     public const int __ID__ = 456626212;
     public override int GetTypeId() => __ID__;
@@ -112,6 +122,8 @@ public sealed partial class Buff : Luban.BeanBase
         + "param1:" + Param1 + ","
         + "trigger:" + Trigger + ","
         + "param2:" + Param2 + ","
+        + "gaintip:" + Gaintip + ","
+        + "gainbtn:" + Gainbtn + ","
         + "}";
     }
 }

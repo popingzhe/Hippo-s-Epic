@@ -12,7 +12,9 @@
     "time": 0,
     "param1": 0,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 2,
@@ -27,7 +29,9 @@
     "time": 0,
     "param1": 2,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 3,
@@ -42,7 +46,9 @@
     "time": 3,
     "param1": 2,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 10,
@@ -57,7 +63,9 @@
     "time": 0,
     "param1": 1,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 11,
@@ -72,7 +80,9 @@
     "time": 0,
     "param1": 2,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 12,
@@ -87,7 +97,9 @@
     "time": 0,
     "param1": 3,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 13,
@@ -102,7 +114,9 @@
     "time": 0,
     "param1": 5,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 14,
@@ -117,7 +131,9 @@
     "time": 0,
     "param1": 1,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 20,
@@ -132,7 +148,9 @@
     "time": 0,
     "param1": 1,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 21,
@@ -147,7 +165,9 @@
     "time": 0,
     "param1": 2,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 22,
@@ -162,7 +182,9 @@
     "time": 0,
     "param1": 3,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 23,
@@ -177,7 +199,9 @@
     "time": 0,
     "param1": 1,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 24,
@@ -192,7 +216,9 @@
     "time": 0,
     "param1": 2,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 25,
@@ -207,7 +233,9 @@
     "time": 0,
     "param1": 3,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 26,
@@ -222,7 +250,9 @@
     "time": 0,
     "param1": 1,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 27,
@@ -237,7 +267,9 @@
     "time": 0,
     "param1": 2,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 28,
@@ -252,7 +284,9 @@
     "time": 0,
     "param1": 3,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   },
   {
     "id": 29,
@@ -267,6 +301,8 @@
     "time": 1,
     "param1": 0,
     "trigger": 0,
-    "param2": 0
+    "param2": 0,
+    "gaintip": "",
+    "gainbtn": ""
   }
 ]

@@ -60,6 +60,7 @@ public class DialogManagerUI : MonoBehaviour
 
         _dialogManager.OnContent += OnContent;
         _dialogManager.OnOptions += OnOptions;
+        _dialogManager.OnDialogBuff += OnDialogBuff;
         _dialogManager.OnDialogEnded += OnDialogEnded;
 
         if (ConditionSystem.HasInstance)
@@ -104,6 +105,15 @@ public class DialogManagerUI : MonoBehaviour
         }
 
         _dialogManager.Advance();
+    }
+
+    /// <summary>对话内容携带长期 buff：发放到玩家 + 弹出获得提示（SceneTip 的 Content_2y 变体）。</summary>
+    private void OnDialogBuff(int buffId)
+    {
+        var buffMgr = BuffManager.Instance;
+        if (buffMgr != null) buffMgr.ApplyBuff(buffId);
+        SceneTip.ShowBuffGlobal(buffId);
+        Debug.Log($"[DialogManagerUI] 对话发放长期 buff: {buffId}");
     }
 
     private void OnOptions(List<OptionInfo> options)

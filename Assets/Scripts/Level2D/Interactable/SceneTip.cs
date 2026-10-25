@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -32,6 +34,22 @@ public class SceneTip : MonoBehaviour
     [Header("悬浮才显示的详情")]
     [SerializeField] private RectTransform hoverArea;   // icon 节点
     [SerializeField] private GameObject detailBox;      // left_detail 节点
+
+    [Header("内容变体（长期 Buff 提示）")]
+    [Tooltip("默认内容节点（物品提示用）。")]
+    [SerializeField] private GameObject contentDefault;
+    [Tooltip("长期 Buff 提示内容节点（Content_2y）。ShowBuff 时显示它、隐藏默认内容。")]
+    [SerializeField] private GameObject contentBuff;
+
+    private bool _buffCached;
+    private GameObject _buffBox;
+    private ContentSizeFitter _buffFitter;
+    private VerticalLayoutGroup _buffLayout;
+    private TextMeshProUGUI _buffHint;
+    private TextMeshProUGUI _buffTip;
+    private TextMeshProUGUI _buffExclaim;
+    private Image _buffIcon;
+    private Button _buffConfirm;
 
     private Action _onConfirm;
     private ContentSizeFitter _boxFitter;
@@ -73,6 +91,7 @@ public class SceneTip : MonoBehaviour
         }
 
         if (!_cached) CacheLayout();
+        ApplyContentVariant(false);   // 物品提示用默认内容
 
         _onConfirm = onConfirm;
         EnsureConfirmAction();
@@ -105,8 +124,10 @@ public class SceneTip : MonoBehaviour
     public void Hide()
     {
         if (confirmButton != null) confirmButton.onClick.RemoveAllListeners();
+        if (_buffConfirm != null) _buffConfirm.onClick.RemoveAllListeners();
         _onConfirm = null;
         if (boxRoot != null) boxRoot.SetActive(false);
+        ApplyContentVariant(false);   // 恢复到默认内容，下次直接复用
         gameObject.SetActive(false);
     }
 
@@ -246,10 +267,295 @@ public class SceneTip : MonoBehaviour
         fitter.SetLayoutVertical();
     }
 
+    /// <summary>
+    /// 显示"获得长期 Buff"提示：使用 Content_2y 变体（contentBuff），
+    /// HintText ← buff.Name，tip_content ← buff.Descrption(+Tip)，ButtonText ← "确定"，
+    /// icon ← buff.Icon（IconLoader）。onConfirm 为确认回调，可为 null。
+    /// </summary>
+    public bool ShowBuff(int buffId, Action onConfirm = null)
+    {
+        cfg.Tables tables = GetTables();
+        if (tables == null)
+        {
+            Debug.LogWarning("[SceneTip] Tables 未就绪，无法显示 Buff 提示");
+            return false;
+        }
+
+        cfg.cfg.buff.Buff buffCfg = tables.TbBuff.GetOrDefault(buffId);
+        if (buffCfg == null)
+        {
+            Debug.LogWarning("[SceneTip] Buff 表中不存在 id=" + buffId);
+            return false;
+        }
+
+        ResolveContentVariants();
+        if (contentBuff == null)
+        {
+            Debug.LogWarning("[SceneTip] 未配置 Content_2y（contentBuff），无法显示 Buff 提示");
+            return false;
+        }
+
+        if (!_cached) CacheLayout();
+        CacheBuffRefs();
+
+        _onConfirm = onConfirm;
+        EnsureConfirmAction();
+        ApplyContentVariant(true);
+
+        if (_buffHint != null) _buffHint.text = buffCfg.Name ?? string.Empty;
+
+        if (_buffTip != null)
+        {
+            string desc = buffCfg.Descrption ?? string.Empty;
+            string tip = buffCfg.Tip ?? string.Empty;
+            _buffTip.text = string.IsNullOrEmpty(tip) ? desc : desc + "\n" + tip;
+        }
+
+        if (_buffExclaim != null) _buffExclaim.text = "确定";
+
+        if (_buffIcon != null)
+        {
+            Sprite sp = IconLoader.LoadItemIcon(buffCfg.Icon);
+            _buffIcon.sprite = sp;
+            _buffIcon.gameObject.SetActive(sp != null);
+        }
+
+        if (_buffConfirm != null)
+        {
+            _buffConfirm.onClick.RemoveAllListeners();
+            _buffConfirm.onClick.AddListener(OnConfirmClicked);
+        }
+
+        if (_buffBox != null) _buffBox.SetActive(true);
+        gameObject.SetActive(true);
+        RebuildBuffLayout();
+        _pendingRebuildFrames = 1;
+        return true;
+    }
+
+    /// <summary>字段没在预制体上连好时，按节点名兜底解析。</summary>
+    private void ResolveContentVariants()
+    {
+        if (contentDefault == null)
+        {
+            Transform t = transform.Find("Content");
+            if (t != null) contentDefault = t.gameObject;
+        }
+        if (contentBuff == null)
+        {
+            Transform t = transform.Find("Content_2y");
+            if (t != null)
+            {
+                contentBuff = t.gameObject;
+                _buffCached = false;   // 兜底拿到后要重新缓存内部引用
+            }
+        }
+    }
+
+    /// <summary>切换内容变体：false=默认(Content)，true=长期Buff(Content_2y)。</summary>
+    private void ApplyContentVariant(bool buff)
+    {
+        ResolveContentVariants();
+        if (contentDefault != null) contentDefault.SetActive(!buff);
+        if (contentBuff != null) contentBuff.SetActive(buff);
+        else if (buff) Debug.LogWarning("[SceneTip] 找不到 Content_2y 节点，退化为默认样式");
+    }
+
+    private void CacheBuffRefs()
+    {
+        if (_buffCached || contentBuff == null) return;
+        _buffCached = true;
+
+        Transform root = contentBuff.transform;
+        Transform border = root.Find("Border");
+        _buffBox = (border != null ? border : root).gameObject;
+        _buffFitter = _buffBox.GetComponent<ContentSizeFitter>();
+        _buffLayout = _buffBox.GetComponent<VerticalLayoutGroup>();
+
+        _buffHint = FindText(root, "HintText");
+        _buffTip = FindText(root, "tip_content");
+        _buffExclaim = FindText(root, "ButtonText");
+        _buffIcon = FindImage(root, "icon");
+
+        Transform btn = root.Find("Border/btn_1");
+        _buffConfirm = btn != null ? btn.GetComponent<Button>() : null;
+    }
+
+    private static TextMeshProUGUI FindText(Transform root, string nodeName)
+    {
+        var all = root.GetComponentsInChildren<TextMeshProUGUI>(true);
+        for (int i = 0; i < all.Length; i++)
+            if (all[i].name == nodeName) return all[i];
+        return null;
+    }
+
+    private static Image FindImage(Transform root, string nodeName)
+    {
+        var all = root.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < all.Length; i++)
+            if (all[i].name == nodeName) return all[i];
+        return null;
+    }
+
+    private void RebuildBuffLayout()
+    {
+        RefreshTextMetrics(_buffHint);
+        RefreshTextMetrics(_buffTip);
+        RefreshTextMetrics(_buffExclaim);
+        Canvas.ForceUpdateCanvases();
+
+        RebuildFitter(_buffHint);
+        RebuildFitter(_buffTip);
+        RebuildFitter(_buffExclaim);
+
+        if (_buffLayout != null)
+        {
+            _buffLayout.CalculateLayoutInputHorizontal();
+            _buffLayout.CalculateLayoutInputVertical();
+            _buffLayout.SetLayoutHorizontal();
+            _buffLayout.SetLayoutVertical();
+        }
+
+        if (_buffFitter != null)
+        {
+            _buffFitter.SetLayoutHorizontal();
+            _buffFitter.SetLayoutVertical();
+        }
+
+        if (_buffBox != null)
+        {
+            var rt = _buffBox.transform as RectTransform;
+            if (rt != null) LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+        }
+    }
+
+    private const string PrefabAddress = "Assets/Prefabs/UI/Interact/SceneTip";
+    private static GameObject _sharedPrefab;
+    // 必须把 handle 存成静态字段，否则 Addressables 的操作会被回收，Completed 回调永远不触发
+    private static AsyncOperationHandle<GameObject> _sharedHandle;
+    private static bool _loading;
+    private static Vector3 _tipLocalPos;   // 提示相对父节点的位置（对齐 Gain_exp）
+
+    /// <summary>全局显示"获得长期 Buff"提示（对话等非交互系统用）。</summary>
+    public static void ShowBuffGlobal(int buffId, Action onConfirm = null, Transform parent = null)
+    {
+        // ① 优先用玩家节点下自建的 Gain_buff（不再实例化 SceneTip 预制体）
+        PlayerCharacter pc = UnityEngine.Object.FindObjectOfType<PlayerCharacter>();
+        Transform gainBuff = pc != null ? pc.transform.Find("Gain_buff") : null;
+        if (gainBuff != null)
+        {
+            ShowOnGainBuffNode(gainBuff.gameObject, buffId);
+            return;
+        }
+
+        if (_sharedPrefab != null)
+        {
+            CreateAndShowBuff(buffId, onConfirm, parent);
+            return;
+        }
+        if (_loading) return;
+
+        _loading = true;
+        _sharedHandle = Addressables.LoadAssetAsync<GameObject>(PrefabAddress);
+        _sharedHandle.Completed += h =>
+        {
+            _loading = false;
+            if (h.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogWarning("[SceneTip] 加载 " + PrefabAddress + " 失败，无法弹 Buff 提示");
+                return;
+            }
+            _sharedPrefab = h.Result;
+            CreateAndShowBuff(buffId, onConfirm, parent);
+        };
+    }
+
+    /// <summary>
+    /// 用玩家节点下自建的 Gain_buff 节点显示获得 Buff 提示：
+    /// 激活节点 → 按顺序填第一/第二个 TMP（名称、描述）→ 2 秒后自动收起。
+    /// 节点上没有 GainBuffTipAutoHide 组件时自动补一个。
+    /// </summary>
+    private static void ShowOnGainBuffNode(GameObject node, int buffId)
+    {
+        if (node == null) return;
+
+        cfg.Tables tables = GetTables();
+        var buffCfg = tables != null && tables.TbBuff != null ? tables.TbBuff.GetOrDefault(buffId) : null;
+        if (buffCfg != null)
+        {
+            var texts = node.GetComponentsInChildren<TMPro.TextMeshProUGUI>(true);
+            if (texts != null && texts.Length > 0)
+            {
+                texts[0].text = buffCfg.Name ?? string.Empty;
+                if (texts.Length > 1) texts[1].text = buffCfg.Descrption ?? string.Empty;
+                for (int i = 2; i < texts.Length; i++)
+                    if (texts[i].name.ToLower().Contains("tip")) texts[i].text = buffCfg.Tip ?? string.Empty;
+            }
+
+        }
+
+        var autoHide = node.GetComponent<GainBuffTipAutoHide>();
+        if (autoHide == null) autoHide = node.AddComponent<GainBuffTipAutoHide>();
+        node.SetActive(true);
+        autoHide.Restart();
+        Debug.Log("[SceneTip] 用 Gain_buff 显示获得 Buff 提示: " + buffId);
+    }
+
+    /// <summary>提示的父节点：和物品/经验提示一致，挂在玩家节点下（找不到玩家则退回场景根）。</summary>
+    private static Transform ResolveTipParent()
+    {
+        PlayerCharacter player = UnityEngine.Object.FindObjectOfType<PlayerCharacter>();
+        if (player == null) return null;
+        Transform ui = player.transform.Find("UI");
+        if (ui != null) return ui;
+
+        // 与"经验获取"面板对齐：挂在玩家节点下，位置取 Gain_exp 的 localPosition
+        Transform gainExp = player.transform.Find("Gain_exp");
+        _tipLocalPos = gainExp != null ? gainExp.localPosition : Vector3.zero;
+        return player.transform;
+    }
+
+    private static void CreateAndShowBuff(int buffId, Action onConfirm, Transform parent = null)
+    {
+        if (parent == null)
+        {
+            _tipLocalPos = Vector3.zero;
+            parent = ResolveTipParent();
+        }
+        GameObject instance = parent != null ? Instantiate(_sharedPrefab, parent) : Instantiate(_sharedPrefab);
+        if (parent != null) instance.transform.localPosition = _tipLocalPos;
+        instance.name = "SceneTip";
+        var tip = instance.GetComponent<SceneTip>();
+        if (tip == null)
+        {
+            Debug.LogWarning("[SceneTip] 预制体上缺少 SceneTip 组件");
+            return;
+        }
+        if (!tip.ShowBuff(buffId, onConfirm))
+            tip.Hide();
+    }
+
     private static cfg.Tables GetTables()
     {
         if (ManagerRegistry.TryGet<DataTableManager>(out DataTableManager dtm) && dtm.Tables != null)
             return dtm.Tables;
         return null;
+    }
+}
+
+/// <summary>Gain_buff 提示：激活后 N 秒自动收起。</summary>
+public class GainBuffTipAutoHide : MonoBehaviour
+{
+    public float seconds = 2f;
+
+    public void Restart()
+    {
+        CancelInvoke();
+        Invoke(nameof(Close), seconds);
+    }
+
+    private void Close()
+    {
+        gameObject.SetActive(false);
     }
 }

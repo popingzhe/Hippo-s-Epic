@@ -19,6 +19,12 @@ public class DialogManager : MonoBehaviour
 
     public event Action<int, int> OnDialogStart;
     public event Action<SpeakerSide, string, string, string> OnContent;
+
+    /// <summary>已发放过 buff 的对话内容 id（同一条内容只发一次）</summary>
+    private readonly HashSet<int> _appliedBuffContents = new HashSet<int>();
+
+    /// <summary>对话内容携带 buff 时触发（参数=buff 表 id），由外部系统发放并弹提示。</summary>
+    public event Action<int> OnDialogBuff;
     public event Action<List<OptionInfo>> OnOptions;
     public event Action OnDialogEnded;
     public event Action<int, string> OnEmotion;
@@ -225,6 +231,13 @@ public class DialogManager : MonoBehaviour
         var content = _contentQueue.Dequeue();
         var side = ResolveSide(content);
         string speakerName = ResolveSpeakerName(content, side);
+
+        // 该条对话内容携带长期 buff：抛给外部处理（Gen 程序集不引用游戏逻辑，由 DialogManagerUI 接）
+        if (content.Buffid > 0 && _appliedBuffContents.Add(content.Id))
+        {
+            Debug.Log($"[DialogManager] 对话内容 {content.Id} 携带 buff {content.Buffid}");
+            OnDialogBuff?.Invoke(content.Buffid);
+        }
 
         OnContent?.Invoke(side, content.Content, speakerName, content.GainItemText ?? "");
 

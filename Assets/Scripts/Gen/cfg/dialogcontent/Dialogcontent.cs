@@ -34,6 +34,7 @@ public sealed partial class Dialogcontent : Luban.BeanBase
         RightSlot3Image = _buf.ReadString();
         Background = _buf.ReadString();
         GainItemText = _buf.ReadString();
+        Buffid = _buf.ReadInt();
     }
 
     public static Dialogcontent DeserializeDialogcontent(ByteBuf _buf)
@@ -89,6 +90,10 @@ public sealed partial class Dialogcontent : Luban.BeanBase
     /// 获得物品提示文本
     /// </summary>
     public readonly string GainItemText;
+    /// <summary>
+    /// 该条对话内容展示时发放的长期buff（buff表id，0=不发放）
+    /// </summary>
+    public readonly int Buffid;
    
     public const int __ID__ = 780059274;
     public override int GetTypeId() => __ID__;
@@ -118,6 +123,7 @@ public sealed partial class Dialogcontent : Luban.BeanBase
         + "rightSlot3Image:" + RightSlot3Image + ","
         + "background:" + Background + ","
         + "gainItemText:" + GainItemText + ","
+        + "buffid:" + Buffid + ","
         + "}";
     }
 }

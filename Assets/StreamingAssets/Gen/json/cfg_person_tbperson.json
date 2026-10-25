@@ -16,9 +16,7 @@
     "animstate": 1,
     "prefab1": "Assets/Prefabs/player/homo_talk",
     "prefab2": "Assets/Prefabs/Battle/homa_battle",
-    "buffIds": [
-      1
-    ],
+    "buffIds": [],
     "animconfigs": [
       "homo_talk",
       "homo_move"

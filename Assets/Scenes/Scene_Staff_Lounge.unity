@@ -5405,24 +5405,32 @@ PrefabInstance:
       value: "\u4E00\u4E2A\u50BB\u903C\u670B\u514B\uFF0C\u88AB\u6253\u7684\u6C38\u6C38\u8FDC\u8FDC\u7761\u7740\u4E86\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].canRepeat
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
+      propertyPath: phases.Array.data[0].hideAfterExecute
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].autoTriggerFirstButton
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].type
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].dataId
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].buttonText
-      value: E
+      value: "\u548C\u4ED6\u4E00\u8D77\u8FDB\u884C\u7761\u7720\u6447\u6EDA"
       objectReference: {fileID: 0}
     - target: {fileID: 5373044614434932604, guid: 0b5aa9fbd5f4a5e4da770a37602b9c3c, type: 3}
       propertyPath: m_Name

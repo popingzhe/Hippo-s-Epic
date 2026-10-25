@@ -129,5 +129,11 @@ public enum InteractionType
     Teleport,
     Consume,
     /// <summary>修改条件满足情况：dataId=条件ID，param1=目标状态（1/true/空=已满足，0/false=未满足）</summary>
-    SetCondition
+    SetCondition,
+
+    /// <summary>获得Buff（长期/永久都行）：dataId=Buff表ID，param1=是否弹获得提示（1/空=弹，0=false=不弹）</summary>
+    GainBuff,
+
+    /// <summary>失去Buff：dataId=Buff表ID（只移除，不弹提示）</summary>
+    LoseBuff
 }

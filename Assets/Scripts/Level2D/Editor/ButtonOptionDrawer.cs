@@ -97,6 +97,7 @@ public class ButtonOptionDrawer : PropertyDrawer
         {
             bool isConsume = tt == InteractionType.Consume;
             bool isSetCond = tt == InteractionType.SetCondition;
+            bool isGainBuff = tt == InteractionType.GainBuff;
             string idLabel = isConsume ? "物品ID" : (isSetCond ? "目标条件ID" : "dataId");
 
             dataIdProp.intValue = EditorGUI.IntField(

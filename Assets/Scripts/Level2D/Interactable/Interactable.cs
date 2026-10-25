@@ -376,6 +376,57 @@ public class Interactable : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 获得 Buff：dataId=Buff表ID；param1=1/空 时用本交互体的提示框弹"获得提示"
+    /// （父节点 = 本交互体的 UI 子节点，位置与物品/经验提示一致）。
+    /// </summary>
+    private void ExecuteGainBuff(ButtonOption button)
+    {
+        if (button.dataId <= 0)
+        {
+            Debug.LogWarning("[Interactable] GainBuff 未配置 Buff ID");
+            return;
+        }
+
+        var buffMgr = BuffManager.Instance;
+        if (buffMgr != null) buffMgr.ApplyBuff(button.dataId);
+        else Debug.LogWarning("[Interactable] BuffManager 不可用，无法发放 buff " + button.dataId);
+
+        string p1 = (button.param1 ?? string.Empty).Trim().ToLower();
+        bool showTip = string.IsNullOrEmpty(p1) || p1 == "1" || p1 == "true";
+        if (!showTip) return;
+
+        // 和物品获得一致：先隐藏交互提示框，提示确认后再刷新回来
+        if (_hint != null) _hint.Hide();
+
+        Transform parent = transform.Find("UI");
+        if (parent == null) parent = transform;
+
+        SceneTip.ShowBuffGlobal(button.dataId, () => { if (this != null) RefreshHint(); }, parent);
+        Debug.Log($"[Interactable] 获得 Buff {button.dataId}（已隐藏交互提示，提示父节点={parent.name}）");
+    }
+
+    /// <summary>失去 Buff：dataId=Buff表ID；只做移除（不弹提示）。</summary>
+    private void ExecuteLoseBuff(ButtonOption button)
+    {
+        if (button.dataId <= 0)
+        {
+            Debug.LogWarning("[Interactable] LoseBuff 未配置 Buff ID");
+            return;
+        }
+
+        var buffMgr = BuffManager.Instance;
+        if (buffMgr == null)
+        {
+            Debug.LogWarning("[Interactable] BuffManager 不可用，无法移除 buff " + button.dataId);
+            return;
+        }
+
+        bool had = buffMgr.HasBuff(button.dataId);
+        buffMgr.RemoveBuff(button.dataId);
+        Debug.Log($"[Interactable] 失去 Buff {button.dataId}（移除前{(had ? "持有" : "未持有")}）");
+    }
+
     private void HijackWithItemTip(ButtonOption button, InteractionPhase phase)
     {
         _itemTipShowing = true;
@@ -535,6 +586,12 @@ public class Interactable : MonoBehaviour
                 ExecuteTeleport(button);
                 break;
 
+            case InteractionType.GainBuff:
+                ExecuteGainBuff(button);
+                break;
+            case InteractionType.LoseBuff:
+                ExecuteLoseBuff(button);
+                break;
             case InteractionType.SetCondition:
                 ExecuteSetCondition(button);
                 break;

@@ -12,6 +12,9 @@ public partial class GameApp
     [Tooltip("条件调试 Tab（实时状态 + 覆盖标记 + 覆盖操作）")]
     [SerializeField] private bool debugEnableConditionTest = true;
 
+    [Tooltip("Buff 调试 Tab（列出 buff 表，添加/移除 + 弹获得提示）")]
+    [SerializeField] private bool debugEnableBuffTest = true;
+
     #endregion
 
     #region Debug Hub State
@@ -22,10 +25,11 @@ public partial class GameApp
         Animation = 1,
         Bag = 2,
         Battle = 3,
-        Condition = 4
+        Condition = 4,
+        Buff = 5
     }
 
-    private static readonly string[] HubTabNames = { "对话", "动画", "背包", "战斗", "条件" };
+    private static readonly string[] HubTabNames = { "对话", "动画", "背包", "战斗", "条件", "Buff" };
 
     private DebugHubTab _hubTab = DebugHubTab.Dialog;
     private bool _hubMinimized;
@@ -48,7 +52,7 @@ public partial class GameApp
     {
         if (!debugEnableHub) return;
         if (!debugEnableDialogTest && !debugEnableAnimationTest
-            && !debugEnableBagTest && !debugEnableBattleTest && !debugEnableConditionTest)
+            && !debugEnableBagTest && !debugEnableBattleTest && !debugEnableConditionTest && !debugEnableBuffTest)
             return;
 
         if (debugHubHotkey && Event.current.type == EventType.KeyDown
@@ -122,6 +126,7 @@ public partial class GameApp
         DrawHubTab(DebugHubTab.Bag, debugEnableBagTest, btn, s);
         DrawHubTab(DebugHubTab.Battle, debugEnableBattleTest, btn, s);
         DrawHubTab(DebugHubTab.Condition, debugEnableConditionTest, btn, s);
+        DrawHubTab(DebugHubTab.Buff, debugEnableBuffTest, btn, s);
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
 
@@ -151,6 +156,10 @@ public partial class GameApp
                 if (debugEnableConditionTest) DrawConditionTestContent(lbl, btn, fld, s);
                 else GUILayout.Label("条件调试未启用（Inspector 勾选）", lbl);
                 break;
+            case DebugHubTab.Buff:
+                if (debugEnableBuffTest) DrawBuffTestContent(lbl, btn, fld, s);
+                else GUILayout.Label("Buff 调试未启用（Inspector 勾选）", lbl);
+                break;
         }
         GUILayout.EndArea();
 
@@ -169,6 +178,60 @@ public partial class GameApp
         {
             _hubResizing = false;
         }
+    }
+
+    private string _hubBuffSearch = "";
+    private Vector2 _hubBuffScroll;
+
+    /// <summary>Buff 调试：列出 buff 表全部条目，可添加/移除，也可"添加并弹获得提示"（顺便验证 SceneTip 的 Content_2y）。</summary>
+    private void DrawBuffTestContent(GUIStyle lbl, GUIStyle btn, GUIStyle fld, float s)
+    {
+        if (!ManagerRegistry.TryGet<DataTableManager>(out DataTableManager dtm) || dtm.Tables == null)
+        {
+            GUILayout.Label("数据表未就绪", lbl);
+            return;
+        }
+
+        BuffManager buffMgr = BuffManager.Instance;
+        var tb = dtm.Tables.TbBuff;
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("筛选:", lbl, GUILayout.Width(40 * s));
+        _hubBuffSearch = GUILayout.TextField(_hubBuffSearch ?? "", fld, GUILayout.Width(150 * s));
+        GUILayout.Label("活跃 " + buffMgr.ActiveBuffs.Count + " 个", lbl);
+        if (GUILayout.Button("清空全部", btn, GUILayout.Width(80 * s))) buffMgr.Clear();
+        GUILayout.EndHorizontal();
+
+        _hubBuffScroll = GUILayout.BeginScrollView(_hubBuffScroll);
+        foreach (var row in tb.DataList)
+        {
+            string label = "[" + row.Id + "] " + row.Name
+                + "   type=" + row.Type + " show=" + row.Showtype
+                + " 回合=" + row.Time + " 次数=" + row.Num;
+            if (!string.IsNullOrEmpty(_hubBuffSearch)
+                && label.IndexOf(_hubBuffSearch, System.StringComparison.OrdinalIgnoreCase) < 0)
+                continue;
+
+            bool has = buffMgr.HasBuff(row.Id);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label((has ? "● " : "○ ") + label, lbl);
+            if (has)
+            {
+                if (GUILayout.Button("移除", btn, GUILayout.Width(56 * s))) buffMgr.RemoveBuff(row.Id);
+            }
+            else
+            {
+                if (GUILayout.Button("添加", btn, GUILayout.Width(56 * s))) buffMgr.ApplyBuff(row.Id);
+            }
+            if (GUILayout.Button("添加+提示", btn, GUILayout.Width(92 * s)))
+            {
+                buffMgr.ApplyBuff(row.Id);
+                SceneTip.ShowBuffGlobal(row.Id);
+            }
+            GUILayout.EndHorizontal();
+        }
+        GUILayout.EndScrollView();
     }
 
     /// <summary>条件调试：实时列出全部条件（状态按 IsConditionMet 现算，覆盖用橙色标记），可直接覆盖/清覆盖。</summary>

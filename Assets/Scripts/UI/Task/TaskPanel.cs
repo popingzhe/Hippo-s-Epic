@@ -43,6 +43,13 @@ public class TaskPanel : UIWindow
 
     public override void OnClose()
     {
+        // 级联关闭：任务面板关闭时，如果地图面板（从本面板打开）还开着，先把地图面板关掉，
+        // 再关任务面板；地图面板没开则只关任务面板。放在 OnClose 里，覆盖关闭按钮 / Esc /
+        // 背包互斥顶掉等所有关闭路径。
+        var uiManager = ManagerRegistry.Get<UIManager>();
+        if (uiManager != null && uiManager.IsOpen<MapPanel>())
+            uiManager.Close<MapPanel>();
+
         QuestManager.Instance.OnQuestNodeChanged -= OnQuestChanged;
         QuestManager.Instance.OnQuestCompleted -= OnQuestChanged;
         QuestManager.Instance.OnQuestFailed -= OnQuestChanged;

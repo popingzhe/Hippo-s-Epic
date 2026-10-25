@@ -25,6 +25,9 @@ public class DialogManager : MonoBehaviour
 
     /// <summary>对话内容携带 buff 时触发（参数=buff 表 id），由外部系统发放并弹提示。</summary>
     public event Action<int> OnDialogBuff;
+
+    /// <summary>对话要求进入战斗时触发，参数=battle 表 id（type=3 的对话）。</summary>
+    public event Action<int> OnDialogBattle;
     public event Action<List<OptionInfo>> OnOptions;
     public event Action OnDialogEnded;
     public event Action<int, string> OnEmotion;
@@ -203,6 +206,21 @@ public class DialogManager : MonoBehaviour
 
     private void PlayCurrentDialog()
     {
+        // type=3：进入战斗（param2 或 param1[0] 为 battle 表 id）
+        if (_currentDialog.Type == 3)
+        {
+            int battleId = 0;
+            if (!int.TryParse((_currentDialog.Param2 ?? string.Empty).Trim(), out battleId) || battleId <= 0)
+            {
+                if (_currentDialog.Param1 != null && _currentDialog.Param1.Count > 0) battleId = _currentDialog.Param1[0];
+            }
+
+            Debug.Log($"[DialogManager] 对话 {_currentDialog.Id} 进入战斗 battleId={battleId}");
+            EndDialog();
+            OnDialogBattle?.Invoke(battleId);
+            return;
+        }
+
         if (_currentDialog.Type == 2)
         {
             ShowOptions();

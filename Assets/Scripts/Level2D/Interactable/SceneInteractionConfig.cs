@@ -135,5 +135,8 @@ public enum InteractionType
     GainBuff,
 
     /// <summary>失去Buff：dataId=Buff表ID（只移除，不弹提示）</summary>
-    LoseBuff
+    LoseBuff,
+
+    /// <summary>进入战斗：dataId=battle 表ID（点击后加载战斗场景开打）</summary>
+    EnterBattle
 }

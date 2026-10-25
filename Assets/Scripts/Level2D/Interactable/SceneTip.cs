@@ -486,32 +486,23 @@ public class SceneTip : MonoBehaviour
             var texts = node.GetComponentsInChildren<TMPro.TextMeshProUGUI>(true);
             if (texts != null && texts.Length > 0)
             {
-                // 主文本：表里 gaintip 优先，空则用 buff 名称
-                // 次文本：描述；按钮文本：gainbtn 优先，空则"确定"（按节点名 btn/button 识别）
-                string mainText = string.IsNullOrEmpty(buffCfg.Gaintip) ? (buffCfg.Name ?? "") : buffCfg.Gaintip;
+                // 按节点名精确填（Gain_buff 结构：Border/HintText、Border/btn_1/ButtonText、Border/left_detail/tip_content）
+                string mainText = string.IsNullOrEmpty(buffCfg.Gaintip) ? (buffCfg.Name ?? string.Empty) : buffCfg.Gaintip;
                 string btnText = string.IsNullOrEmpty(buffCfg.Gainbtn) ? "确定" : buffCfg.Gainbtn;
+
+                string detail = buffCfg.Descrption ?? string.Empty;
+                if (!string.IsNullOrEmpty(buffCfg.Tip)) detail = string.IsNullOrEmpty(detail) ? buffCfg.Tip : detail + "\n" + buffCfg.Tip;
 
                 bool mainFilled = false;
                 for (int i = 0; i < texts.Length; i++)
                 {
                     string n = texts[i].name.ToLower();
-                    if (n.Contains("btn") || n.Contains("button"))
-                    {
-                        texts[i].text = btnText;
-                        continue;
-                    }
-                    if (!mainFilled)
-                    {
-                        texts[i].text = mainText;
-                        mainFilled = true;
-                    }
-                    else
-                    {
-                        texts[i].text = buffCfg.Descrption ?? string.Empty;
-                    }
+                    if (n.Contains("btn") || n.Contains("button")) { texts[i].text = btnText; continue; }
+                    if (n.Contains("tip_content") || n.Contains("detail")) { texts[i].text = detail; continue; }
+                    if (!mainFilled) { texts[i].text = mainText; mainFilled = true; continue; }
+                    texts[i].text = detail;
                 }
             }
-
         }
 
         var autoHide = node.GetComponent<GainBuffTipAutoHide>();

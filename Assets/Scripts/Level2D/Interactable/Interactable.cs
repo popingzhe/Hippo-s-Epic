@@ -53,11 +53,23 @@ public class Interactable : MonoBehaviour
 
         if (_currentPhase == null)
         {
-            Debug.LogWarning($"[Interactable] {EntityId} 未找到 state={state} 的阶段配置");
+            string configured = "";
+            if (phases != null)
+            {
+                for (int i = 0; i < phases.Count; i++)
+                {
+                    if (i > 0) configured += ",";
+                    configured += phases[i].state;
+                }
+            }
+            Debug.LogWarning($"[Interactable] {name}({EntityId}) 交互阶段状态不一致：当前 state={state}，但只配置了 state=[{configured}] 的阶段 ⇒ 提示框内容不会显示。请补一个 state={state} 的阶段，或检查存档里的实体状态");
             return;
         }
 
         _currentPhase.MigrateIfNeeded();
+
+        if (_currentPhase.buttons == null || _currentPhase.buttons.Count == 0)
+            Debug.LogWarning($"[Interactable] {name}({EntityId}) 阶段 state={state} 没有配置任何按钮 ⇒ 交互不可执行（提示框会是空白）");
 
         if (_currentPhase.deactivateSelf)
         {
@@ -427,6 +439,26 @@ public class Interactable : MonoBehaviour
         Debug.Log($"[Interactable] 失去 Buff {button.dataId}（移除前{(had ? "持有" : "未持有")}）");
     }
 
+    /// <summary>进入战斗：dataId=battle 表ID，走 GameApp.EnterBattle（加载战斗场景 → 初始化 → 开打）。</summary>
+    private void ExecuteEnterBattle(ButtonOption button)
+    {
+        if (button.dataId <= 0)
+        {
+            Debug.LogWarning("[Interactable] EnterBattle 未配置 battle ID");
+            return;
+        }
+
+        var app = GameApp.Instance;
+        if (app == null)
+        {
+            Debug.LogWarning("[Interactable] GameApp 未就绪，无法进入战斗 " + button.dataId);
+            return;
+        }
+
+        Debug.Log($"[Interactable] 进入战斗 battleId={button.dataId}");
+        app.EnterBattle(button.dataId);
+    }
+
     private void HijackWithItemTip(ButtonOption button, InteractionPhase phase)
     {
         _itemTipShowing = true;
@@ -591,6 +623,9 @@ public class Interactable : MonoBehaviour
                 break;
             case InteractionType.LoseBuff:
                 ExecuteLoseBuff(button);
+                break;
+            case InteractionType.EnterBattle:
+                ExecuteEnterBattle(button);
                 break;
             case InteractionType.SetCondition:
                 ExecuteSetCondition(button);

@@ -299,5 +299,45 @@
     "speakerid2": 2,
     "gain_item_id": 0,
     "condition_ids": []
+  },
+  {
+    "id": 9001002,
+    "type": 2,
+    "param1": [
+      9001003,
+      9001004
+    ],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9001003,
+    "type": 3,
+    "param1": [
+      0
+    ],
+    "param2": "1",
+    "selection_name": "打一场",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9001004,
+    "type": 1,
+    "param1": [
+      0
+    ],
+    "param2": "",
+    "selection_name": "算了",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
   }
 ]

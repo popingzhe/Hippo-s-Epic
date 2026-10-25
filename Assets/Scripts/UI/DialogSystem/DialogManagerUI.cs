@@ -61,6 +61,7 @@ public class DialogManagerUI : MonoBehaviour
         _dialogManager.OnContent += OnContent;
         _dialogManager.OnOptions += OnOptions;
         _dialogManager.OnDialogBuff += OnDialogBuff;
+        _dialogManager.OnDialogBattle += OnDialogBattle;
         _dialogManager.OnDialogEnded += OnDialogEnded;
 
         if (ConditionSystem.HasInstance)
@@ -114,6 +115,26 @@ public class DialogManagerUI : MonoBehaviour
         if (buffMgr != null) buffMgr.ApplyBuff(buffId);
         SceneTip.ShowBuffGlobal(buffId);
         Debug.Log($"[DialogManagerUI] 对话发放长期 buff: {buffId}");
+    }
+
+    /// <summary>type=3 的对话：关闭对话后进入指定战斗。</summary>
+    private void OnDialogBattle(int battleId)
+    {
+        if (battleId <= 0)
+        {
+            Debug.LogWarning("[DialogManagerUI] 对话要求进入战斗但 battleId 无效");
+            return;
+        }
+
+        var app = GameApp.Instance;
+        if (app == null)
+        {
+            Debug.LogWarning("[DialogManagerUI] GameApp 未就绪，无法进入战斗 " + battleId);
+            return;
+        }
+
+        Debug.Log($"[DialogManagerUI] 对话结束 → 进入战斗 {battleId}");
+        app.EnterBattle(battleId);
     }
 
     private void OnOptions(List<OptionInfo> options)

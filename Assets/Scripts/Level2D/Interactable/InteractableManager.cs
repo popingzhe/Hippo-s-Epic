@@ -17,7 +17,10 @@ public static class InteractableManager
 
             var firstPhase = interactable.GetPhase(0);
             if (firstPhase == null)
+            {
+                Debug.LogWarning($"[InteractableManager] {interactable.name} 缺少 state=0 的交互阶段 ⇒ 该交互体被跳过初始化（提示框不会创建）。请给它补一个 state=0 的阶段");
                 continue;
+            }
 
             string eid = interactable.EntityId;
             int state;
@@ -32,6 +35,8 @@ public static class InteractableManager
             }
 
             interactable.ApplyState(state);
+            if (interactable.CurrentPhase == null)
+                Debug.LogWarning($"[InteractableManager] {interactable.name} 存档状态 state={state} 与阶段配置不一致 ⇒ 已中断、未执行（提示框将是空白）");
             interactable.InitializeHint();
             matchCount++;
         }

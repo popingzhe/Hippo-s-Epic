@@ -302,7 +302,7 @@ public class SceneTip : MonoBehaviour
         EnsureConfirmAction();
         ApplyContentVariant(true);
 
-        if (_buffHint != null) _buffHint.text = buffCfg.Name ?? string.Empty;
+        if (_buffHint != null) _buffHint.text = string.IsNullOrEmpty(buffCfg.Gaintip) ? (buffCfg.Name ?? string.Empty) : buffCfg.Gaintip;
 
         if (_buffTip != null)
         {
@@ -311,7 +311,7 @@ public class SceneTip : MonoBehaviour
             _buffTip.text = string.IsNullOrEmpty(tip) ? desc : desc + "\n" + tip;
         }
 
-        if (_buffExclaim != null) _buffExclaim.text = "确定";
+        if (_buffExclaim != null) _buffExclaim.text = string.IsNullOrEmpty(buffCfg.Gainbtn) ? "确定" : buffCfg.Gainbtn;
 
         if (_buffIcon != null)
         {
@@ -486,10 +486,30 @@ public class SceneTip : MonoBehaviour
             var texts = node.GetComponentsInChildren<TMPro.TextMeshProUGUI>(true);
             if (texts != null && texts.Length > 0)
             {
-                texts[0].text = buffCfg.Name ?? string.Empty;
-                if (texts.Length > 1) texts[1].text = buffCfg.Descrption ?? string.Empty;
-                for (int i = 2; i < texts.Length; i++)
-                    if (texts[i].name.ToLower().Contains("tip")) texts[i].text = buffCfg.Tip ?? string.Empty;
+                // 主文本：表里 gaintip 优先，空则用 buff 名称
+                // 次文本：描述；按钮文本：gainbtn 优先，空则"确定"（按节点名 btn/button 识别）
+                string mainText = string.IsNullOrEmpty(buffCfg.Gaintip) ? (buffCfg.Name ?? "") : buffCfg.Gaintip;
+                string btnText = string.IsNullOrEmpty(buffCfg.Gainbtn) ? "确定" : buffCfg.Gainbtn;
+
+                bool mainFilled = false;
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    string n = texts[i].name.ToLower();
+                    if (n.Contains("btn") || n.Contains("button"))
+                    {
+                        texts[i].text = btnText;
+                        continue;
+                    }
+                    if (!mainFilled)
+                    {
+                        texts[i].text = mainText;
+                        mainFilled = true;
+                    }
+                    else
+                    {
+                        texts[i].text = buffCfg.Descrption ?? string.Empty;
+                    }
+                }
             }
 
         }

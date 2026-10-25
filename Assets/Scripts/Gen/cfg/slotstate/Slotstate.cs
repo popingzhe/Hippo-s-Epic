@@ -62,6 +62,81 @@ public sealed partial class Slotstate : Luban.BeanBase
         Zhanglang1 = _buf.ReadInt();
         Deng = _buf.ReadInt();
         Dengmie = _buf.ReadInt();
+        Wxr2Ying = _buf.ReadInt();
+        Wxr2Tui2 = _buf.ReadInt();
+        Wxr2Tui1 = _buf.ReadInt();
+        Wxr2Bozi = _buf.ReadInt();
+        Wxr2St = _buf.ReadInt();
+        Wxr2Shou2 = _buf.ReadInt();
+        Wxr2Shou1 = _buf.ReadInt();
+        Wxr2Tou = _buf.ReadInt();
+        Wxr2Yan2 = _buf.ReadInt();
+        Wxr2Yan1 = _buf.ReadInt();
+        Wxr2Zui = _buf.ReadInt();
+        Wxr2Shou3 = _buf.ReadInt();
+        Ying = _buf.ReadInt();
+        ShouR2 = _buf.ReadInt();
+        TuiR = _buf.ReadInt();
+        St = _buf.ReadInt();
+        TuiL = _buf.ReadInt();
+        TuiL2 = _buf.ReadInt();
+        ShouR = _buf.ReadInt();
+        ShouL = _buf.ReadInt();
+        Tou = _buf.ReadInt();
+        Bq1 = _buf.ReadInt();
+        Xing2 = _buf.ReadInt();
+        Xing = _buf.ReadInt();
+        Dead = _buf.ReadInt();
+        Tx1 = _buf.ReadInt();
+        Tou3 = _buf.ReadInt();
+        Tou7 = _buf.ReadInt();
+        Tou4 = _buf.ReadInt();
+        Tou5 = _buf.ReadInt();
+        Tou6 = _buf.ReadInt();
+        Tou8 = _buf.ReadInt();
+        Shou4 = _buf.ReadInt();
+        Jiao = _buf.ReadInt();
+        Shou2 = _buf.ReadInt();
+        S33 = _buf.ReadInt();
+        S32 = _buf.ReadInt();
+        S31 = _buf.ReadInt();
+        S23 = _buf.ReadInt();
+        S22 = _buf.ReadInt();
+        Shou1 = _buf.ReadInt();
+        S21 = _buf.ReadInt();
+        S14 = _buf.ReadInt();
+        S13 = _buf.ReadInt();
+        S12 = _buf.ReadInt();
+        S11 = _buf.ReadInt();
+        Guang = _buf.ReadInt();
+        Rtui = _buf.ReadInt();
+        Ltui = _buf.ReadInt();
+        Kua = _buf.ReadInt();
+        Rxiaobi = _buf.ReadInt();
+        Rdabi = _buf.ReadInt();
+        Rquan = _buf.ReadInt();
+        Lxiaobi = _buf.ReadInt();
+        Lquan = _buf.ReadInt();
+        Ldabi = _buf.ReadInt();
+        Fa = _buf.ReadInt();
+        Rsdhou1 = _buf.ReadInt();
+        Lshou1 = _buf.ReadInt();
+        Shenti = _buf.ReadInt();
+        Yaodai = _buf.ReadInt();
+        Bq = _buf.ReadInt();
+        后臂 = _buf.ReadInt();
+        右臂 = _buf.ReadInt();
+        左臂 = _buf.ReadInt();
+        右腿 = _buf.ReadInt();
+        左腿 = _buf.ReadInt();
+        裆部 = _buf.ReadInt();
+        头大 = _buf.ReadInt();
+        脸大 = _buf.ReadInt();
+        头小 = _buf.ReadInt();
+        脸小 = _buf.ReadInt();
+        绑带 = _buf.ReadInt();
+        胳膊 = _buf.ReadInt();
+        肩带 = _buf.ReadInt();
     }
 
     public static Slotstate DeserializeSlotstate(ByteBuf _buf)
@@ -250,6 +325,306 @@ public sealed partial class Slotstate : Luban.BeanBase
     /// dengmie插槽
     /// </summary>
     public readonly int Dengmie;
+    /// <summary>
+    /// wxr2_ying插槽
+    /// </summary>
+    public readonly int Wxr2Ying;
+    /// <summary>
+    /// wxr2_tui2插槽
+    /// </summary>
+    public readonly int Wxr2Tui2;
+    /// <summary>
+    /// wxr2_tui1插槽
+    /// </summary>
+    public readonly int Wxr2Tui1;
+    /// <summary>
+    /// wxr2_bozi插槽
+    /// </summary>
+    public readonly int Wxr2Bozi;
+    /// <summary>
+    /// wxr2_st插槽
+    /// </summary>
+    public readonly int Wxr2St;
+    /// <summary>
+    /// wxr2_shou2插槽
+    /// </summary>
+    public readonly int Wxr2Shou2;
+    /// <summary>
+    /// wxr2_shou1插槽
+    /// </summary>
+    public readonly int Wxr2Shou1;
+    /// <summary>
+    /// wxr2_tou插槽
+    /// </summary>
+    public readonly int Wxr2Tou;
+    /// <summary>
+    /// wxr2_yan2插槽
+    /// </summary>
+    public readonly int Wxr2Yan2;
+    /// <summary>
+    /// wxr2_yan1插槽
+    /// </summary>
+    public readonly int Wxr2Yan1;
+    /// <summary>
+    /// wxr2_zui插槽
+    /// </summary>
+    public readonly int Wxr2Zui;
+    /// <summary>
+    /// wxr2_shou3插槽
+    /// </summary>
+    public readonly int Wxr2Shou3;
+    /// <summary>
+    /// ying插槽
+    /// </summary>
+    public readonly int Ying;
+    /// <summary>
+    /// shou_r2插槽
+    /// </summary>
+    public readonly int ShouR2;
+    /// <summary>
+    /// tui_r插槽
+    /// </summary>
+    public readonly int TuiR;
+    /// <summary>
+    /// st插槽
+    /// </summary>
+    public readonly int St;
+    /// <summary>
+    /// tui_l插槽
+    /// </summary>
+    public readonly int TuiL;
+    /// <summary>
+    /// tui_l2插槽
+    /// </summary>
+    public readonly int TuiL2;
+    /// <summary>
+    /// shou_r插槽
+    /// </summary>
+    public readonly int ShouR;
+    /// <summary>
+    /// shou_l插槽
+    /// </summary>
+    public readonly int ShouL;
+    /// <summary>
+    /// tou插槽
+    /// </summary>
+    public readonly int Tou;
+    /// <summary>
+    /// bq1插槽
+    /// </summary>
+    public readonly int Bq1;
+    /// <summary>
+    /// xing2插槽
+    /// </summary>
+    public readonly int Xing2;
+    /// <summary>
+    /// xing插槽
+    /// </summary>
+    public readonly int Xing;
+    /// <summary>
+    /// dead插槽
+    /// </summary>
+    public readonly int Dead;
+    /// <summary>
+    /// tx1插槽
+    /// </summary>
+    public readonly int Tx1;
+    /// <summary>
+    /// tou3插槽
+    /// </summary>
+    public readonly int Tou3;
+    /// <summary>
+    /// tou7插槽
+    /// </summary>
+    public readonly int Tou7;
+    /// <summary>
+    /// tou4插槽
+    /// </summary>
+    public readonly int Tou4;
+    /// <summary>
+    /// tou5插槽
+    /// </summary>
+    public readonly int Tou5;
+    /// <summary>
+    /// tou6插槽
+    /// </summary>
+    public readonly int Tou6;
+    /// <summary>
+    /// tou8插槽
+    /// </summary>
+    public readonly int Tou8;
+    /// <summary>
+    /// shou4插槽
+    /// </summary>
+    public readonly int Shou4;
+    /// <summary>
+    /// jiao插槽
+    /// </summary>
+    public readonly int Jiao;
+    /// <summary>
+    /// shou2插槽
+    /// </summary>
+    public readonly int Shou2;
+    /// <summary>
+    /// 3_3插槽
+    /// </summary>
+    public readonly int S33;
+    /// <summary>
+    /// 3_2插槽
+    /// </summary>
+    public readonly int S32;
+    /// <summary>
+    /// 3_1插槽
+    /// </summary>
+    public readonly int S31;
+    /// <summary>
+    /// 2_3插槽
+    /// </summary>
+    public readonly int S23;
+    /// <summary>
+    /// 2_2插槽
+    /// </summary>
+    public readonly int S22;
+    /// <summary>
+    /// shou1插槽
+    /// </summary>
+    public readonly int Shou1;
+    /// <summary>
+    /// 2_1插槽
+    /// </summary>
+    public readonly int S21;
+    /// <summary>
+    /// 1_4插槽
+    /// </summary>
+    public readonly int S14;
+    /// <summary>
+    /// 1_3插槽
+    /// </summary>
+    public readonly int S13;
+    /// <summary>
+    /// 1_2插槽
+    /// </summary>
+    public readonly int S12;
+    /// <summary>
+    /// 1_1插槽
+    /// </summary>
+    public readonly int S11;
+    /// <summary>
+    /// guang插槽
+    /// </summary>
+    public readonly int Guang;
+    /// <summary>
+    /// rtui插槽
+    /// </summary>
+    public readonly int Rtui;
+    /// <summary>
+    /// ltui插槽
+    /// </summary>
+    public readonly int Ltui;
+    /// <summary>
+    /// kua插槽
+    /// </summary>
+    public readonly int Kua;
+    /// <summary>
+    /// rxiaobi插槽
+    /// </summary>
+    public readonly int Rxiaobi;
+    /// <summary>
+    /// rdabi插槽
+    /// </summary>
+    public readonly int Rdabi;
+    /// <summary>
+    /// rquan插槽
+    /// </summary>
+    public readonly int Rquan;
+    /// <summary>
+    /// lxiaobi插槽
+    /// </summary>
+    public readonly int Lxiaobi;
+    /// <summary>
+    /// lquan插槽
+    /// </summary>
+    public readonly int Lquan;
+    /// <summary>
+    /// ldabi插槽
+    /// </summary>
+    public readonly int Ldabi;
+    /// <summary>
+    /// fa插槽
+    /// </summary>
+    public readonly int Fa;
+    /// <summary>
+    /// rsdhou1插槽
+    /// </summary>
+    public readonly int Rsdhou1;
+    /// <summary>
+    /// lshou1插槽
+    /// </summary>
+    public readonly int Lshou1;
+    /// <summary>
+    /// shenti插槽
+    /// </summary>
+    public readonly int Shenti;
+    /// <summary>
+    /// yaodai插槽
+    /// </summary>
+    public readonly int Yaodai;
+    /// <summary>
+    /// bq插槽
+    /// </summary>
+    public readonly int Bq;
+    /// <summary>
+    /// 后臂插槽
+    /// </summary>
+    public readonly int 后臂;
+    /// <summary>
+    /// 右臂插槽
+    /// </summary>
+    public readonly int 右臂;
+    /// <summary>
+    /// 左臂插槽
+    /// </summary>
+    public readonly int 左臂;
+    /// <summary>
+    /// 右腿插槽
+    /// </summary>
+    public readonly int 右腿;
+    /// <summary>
+    /// 左腿插槽
+    /// </summary>
+    public readonly int 左腿;
+    /// <summary>
+    /// 裆部插槽
+    /// </summary>
+    public readonly int 裆部;
+    /// <summary>
+    /// 头大插槽
+    /// </summary>
+    public readonly int 头大;
+    /// <summary>
+    /// 脸大插槽
+    /// </summary>
+    public readonly int 脸大;
+    /// <summary>
+    /// 头小插槽
+    /// </summary>
+    public readonly int 头小;
+    /// <summary>
+    /// 脸小插槽
+    /// </summary>
+    public readonly int 脸小;
+    /// <summary>
+    /// 绑带插槽
+    /// </summary>
+    public readonly int 绑带;
+    /// <summary>
+    /// 胳膊插槽
+    /// </summary>
+    public readonly int 胳膊;
+    /// <summary>
+    /// 肩带插槽
+    /// </summary>
+    public readonly int 肩带;
    
     public const int __ID__ = 1393288654;
     public override int GetTypeId() => __ID__;
@@ -307,6 +682,81 @@ public sealed partial class Slotstate : Luban.BeanBase
         + "zhanglang1:" + Zhanglang1 + ","
         + "deng:" + Deng + ","
         + "dengmie:" + Dengmie + ","
+        + "wxr2Ying:" + Wxr2Ying + ","
+        + "wxr2Tui2:" + Wxr2Tui2 + ","
+        + "wxr2Tui1:" + Wxr2Tui1 + ","
+        + "wxr2Bozi:" + Wxr2Bozi + ","
+        + "wxr2St:" + Wxr2St + ","
+        + "wxr2Shou2:" + Wxr2Shou2 + ","
+        + "wxr2Shou1:" + Wxr2Shou1 + ","
+        + "wxr2Tou:" + Wxr2Tou + ","
+        + "wxr2Yan2:" + Wxr2Yan2 + ","
+        + "wxr2Yan1:" + Wxr2Yan1 + ","
+        + "wxr2Zui:" + Wxr2Zui + ","
+        + "wxr2Shou3:" + Wxr2Shou3 + ","
+        + "ying:" + Ying + ","
+        + "shouR2:" + ShouR2 + ","
+        + "tuiR:" + TuiR + ","
+        + "st:" + St + ","
+        + "tuiL:" + TuiL + ","
+        + "tuiL2:" + TuiL2 + ","
+        + "shouR:" + ShouR + ","
+        + "shouL:" + ShouL + ","
+        + "tou:" + Tou + ","
+        + "bq1:" + Bq1 + ","
+        + "xing2:" + Xing2 + ","
+        + "xing:" + Xing + ","
+        + "dead:" + Dead + ","
+        + "tx1:" + Tx1 + ","
+        + "tou3:" + Tou3 + ","
+        + "tou7:" + Tou7 + ","
+        + "tou4:" + Tou4 + ","
+        + "tou5:" + Tou5 + ","
+        + "tou6:" + Tou6 + ","
+        + "tou8:" + Tou8 + ","
+        + "shou4:" + Shou4 + ","
+        + "jiao:" + Jiao + ","
+        + "shou2:" + Shou2 + ","
+        + "S33:" + S33 + ","
+        + "S32:" + S32 + ","
+        + "S31:" + S31 + ","
+        + "S23:" + S23 + ","
+        + "S22:" + S22 + ","
+        + "shou1:" + Shou1 + ","
+        + "S21:" + S21 + ","
+        + "S14:" + S14 + ","
+        + "S13:" + S13 + ","
+        + "S12:" + S12 + ","
+        + "S11:" + S11 + ","
+        + "guang:" + Guang + ","
+        + "rtui:" + Rtui + ","
+        + "ltui:" + Ltui + ","
+        + "kua:" + Kua + ","
+        + "rxiaobi:" + Rxiaobi + ","
+        + "rdabi:" + Rdabi + ","
+        + "rquan:" + Rquan + ","
+        + "lxiaobi:" + Lxiaobi + ","
+        + "lquan:" + Lquan + ","
+        + "ldabi:" + Ldabi + ","
+        + "fa:" + Fa + ","
+        + "rsdhou1:" + Rsdhou1 + ","
+        + "lshou1:" + Lshou1 + ","
+        + "shenti:" + Shenti + ","
+        + "yaodai:" + Yaodai + ","
+        + "bq:" + Bq + ","
+        + "后臂:" + 后臂 + ","
+        + "右臂:" + 右臂 + ","
+        + "左臂:" + 左臂 + ","
+        + "右腿:" + 右腿 + ","
+        + "左腿:" + 左腿 + ","
+        + "裆部:" + 裆部 + ","
+        + "头大:" + 头大 + ","
+        + "脸大:" + 脸大 + ","
+        + "头小:" + 头小 + ","
+        + "脸小:" + 脸小 + ","
+        + "绑带:" + 绑带 + ","
+        + "胳膊:" + 胳膊 + ","
+        + "肩带:" + 肩带 + ","
         + "}";
     }
 }

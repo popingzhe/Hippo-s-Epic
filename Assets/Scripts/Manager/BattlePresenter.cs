@@ -23,6 +23,10 @@ public class BattlePresenter : MonoBehaviour
     public bool IsDeathPlaying { get; private set; }
     private int _deathCount;
 
+    // 本次攻击动画总时长 / 打击时刻（用于收招补齐）
+    private float _lastAttackDur;
+    private float _hitMomentTime;
+
     /// <summary> 序列开始/结束（UI 订阅做输入抑制） </summary>
     public event Action OnSequenceBegin;
     public event Action OnSequenceEnd;
@@ -37,6 +41,8 @@ public class BattlePresenter : MonoBehaviour
     private const float ComedyDelay = 0.15f;         // 喜剧延迟：受击后停顿再飘字
     private const float FloatTextStagger = 0.05f;    // 多目标飘字间隔
     private const float AttackFallbackDuration = 0.5f; // 未配置攻击组合时的兜底等待
+    /// <summary> 打击时刻占攻击动画的比例：在此刻结算命中并播受击（半区前=抬手，之后=收招） </summary>
+    [SerializeField] private float attackHitRatio = 0.5f;
     private const float KnockbackDistance = 0.30f;     // 无受击动画时的后仰位移兜底
     private const float KnockbackDuration = 0.14f;     // 后仰位移时长
 
@@ -183,10 +189,12 @@ public class BattlePresenter : MonoBehaviour
             if (actorGo != null)
             {
                 var attackComp = ResolveAttackAnimation(skillId, actor.PersonId, actorAnim);
-                float attackDur = attackComp.HasValue ? PlayOnceNonLoop(actorAnim, attackComp.Value) : 0f;
-                if (attackDur <= 0f) attackDur = AttackFallbackDuration;
-                yield return W(attackDur);
-                // 攻击后保持攻击姿势（非循环停在末帧），待受击反馈 + 飘字结束后归位再回 idle
+                _lastAttackDur = attackComp.HasValue ? PlayOnceNonLoop(actorAnim, attackComp.Value) : 0f;
+                if (_lastAttackDur <= 0f) _lastAttackDur = AttackFallbackDuration;
+                // 只播到"打击时刻"，之后立刻结算命中 + 播受击（不再等整段动画播完）
+                float ration = Mathf.Clamp(attackHitRatio, 0.05f, 0.95f);
+                _hitMomentTime = _lastAttackDur * ration;
+                yield return W(_hitMomentTime);
             }
 
             // ── 命中结算：打击时刻已过，真正扣血/回血（支持 skill.Hitdelay 延迟出伤）──
@@ -206,7 +214,8 @@ public class BattlePresenter : MonoBehaviour
                 _battleManager.ResolvePendingHits();
             }
 
-            // ── 受击反馈：每目标播放自身 Hurt 组合（间隔 0.08s；未配置则不播，仅短停）──
+            // ── 受击反馈：所有目标【同时】播（多目标不再串行拖延），只等最长的一个 ──
+            float hurtMax = 0f;
             foreach (var target in validTargets)
             {
                 var targetGo = GetUnitGo(target);
@@ -216,23 +225,29 @@ public class BattlePresenter : MonoBehaviour
                 if (targetAnim != null && HasBattleAnim(target, CompositionName.Hurt))
                 {
                     float hurtDur = PlayOnceNonLoop(targetAnim, CompositionName.Hurt);
-                    if (hurtDur > 0f)
-                    {
-                        yield return W(hurtDur);
-                        PlayIdle(target, targetAnim);
-                    }
-                    else
-                    {
-                        yield return W(HitInterval);
-                    }
+                    if (hurtDur > hurtMax) hurtMax = hurtDur;
                 }
                 else
                 {
                     // 无受击动画：位移后仰兜底
-                    yield return KnockbackRoutine(targetGo, actorGo, KnockbackDistance, KnockbackDuration);
-                    yield return W(HitInterval);
+                    StartCoroutine(KnockbackRoutine(targetGo, actorGo, KnockbackDistance, KnockbackDuration));
+                    if (KnockbackDuration > hurtMax) hurtMax = KnockbackDuration;
                 }
             }
+            if (hurtMax > 0f)
+            {
+                yield return W(hurtMax);
+                foreach (var target in validTargets)
+                {
+                    var g = GetUnitGo(target);
+                    if (g != null) PlayIdle(target, GetAnimCtrl(g));
+                }
+            }
+
+            // ── 收招：把攻击动画剩下的部分播完（保持出招姿势自然衔接） ──
+            float restTime = _lastAttackDur - _hitMomentTime;
+            if (restTime > 0f)
+                yield return W(restTime);
 
             // ── [1.02s] 喜剧延迟：受击演完停顿一拍，再飘字（WoL 滑稽感关键）──
             yield return W(ComedyDelay);

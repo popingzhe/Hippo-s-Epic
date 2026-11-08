@@ -288,9 +288,9 @@ public class BattlePresenter : MonoBehaviour
         {
             IsPlaying = false;
             OnSequenceEnd?.Invoke();
+            // 回调必须保证执行：序列中途异常时也要走阵亡结算/回合推进，否则战斗会永久卡死
+            onComplete?.Invoke();
         }
-
-        onComplete?.Invoke();
     }
 
     #region 死亡演出
@@ -310,8 +310,15 @@ public class BattlePresenter : MonoBehaviour
         try
         {
             // 等当前演出序列结束（攻击方飘字/归位完成）再倒地，避免死亡演出抢跑
-            while (IsPlaying)
+            // 加超时保护：自己打自己致死时，行动者的死亡会打断序列，IsPlaying 可能永远为 true
+            float seqGuard = 0f;
+            while (IsPlaying && seqGuard < 3f)
+            {
+                seqGuard += Time.deltaTime;
                 yield return null;
+            }
+            if (IsPlaying)
+                Debug.LogWarning("[BattlePresenter] 死亡演出等待序列结束超时(3s)，强制继续");
 
             // 再等一小拍让飘字亮稳
             yield return new WaitForSeconds(0.2f);
@@ -320,21 +327,16 @@ public class BattlePresenter : MonoBehaviour
             bool died = false;
             if (anim != null && HasBattleAnim(unit, CompositionName.Die))
             {
-                float dieDur = PlayOnceNonLoop(anim, CompositionName.Die);
+                // 死亡动画循环播放：尸首留在场上，不再播一次就隐藏
+                float dieDur = PlayLoop(anim, CompositionName.Die);
                 if (dieDur > 0f)
-                {
-                    yield return new WaitForSeconds(dieDur);
                     died = true;
-                }
             }
             else if (anim != null && HasBattleAnim(unit, CompositionName.Dead))
             {
-                float dieDur = PlayOnceNonLoop(anim, CompositionName.Dead);
+                float dieDur = PlayLoop(anim, CompositionName.Dead);
                 if (dieDur > 0f)
-                {
-                    yield return new WaitForSeconds(dieDur);
                     died = true;
-                }
             }
 
             if (!died)
@@ -355,7 +357,7 @@ public class BattlePresenter : MonoBehaviour
                     yield return null;
                 }
             }
-            go.SetActive(false);
+            // 不隐藏：死亡后尸体保留在场上（有死亡动画时循环播放）
         }
         finally
         {

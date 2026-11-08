@@ -104,6 +104,7 @@ MonoBehaviour:
     - dialog_character
     - battle_prefab
     - battle_bg
+    - skill_icon
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 871ac41e57a390b4fae6b1d3e7f7f56e, type: 2}

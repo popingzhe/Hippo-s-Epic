@@ -57,8 +57,11 @@ public class BattleSkillPanel : BattleSubPanel
     [SerializeField] private GameObject skillItemPrefab;
 
     [Header("技能图标")]
-    [Tooltip("技能图标加载地址格式，{0} 为技能表 Icon 字段；找不到地址时保留模板默认图标")]
-    [SerializeField] private string skillIconPathFormat = "Assets/Art/Sprites/UI/Skill/{0}";
+    [Tooltip("技能图标加载地址格式，{0} 为技能表 Icon 字段（对应 skill_{0}.png）")]
+    [SerializeField] private string skillIconPathFormat = "Assets/Art/Sprites/UI/battle/skill_icon/skill_{0}";
+
+    [Tooltip("缺省图标 ID：表里 Icon<=0 或对应图标不存在时，回退到该图标；<=0 表示保留模板自带图标")]
+    [SerializeField] private int defaultSkillIconId = 1;
 
     private Action<int> _onSkillSelected;
     private Func<int, bool> _canUseOnTarget;
@@ -82,9 +85,13 @@ public class BattleSkillPanel : BattleSubPanel
             skillItemPrefab.SetActive(false);
     }
 
+    /// <summary>战斗动作分类过滤：null=不过滤 0=暴力行为 1=咄咄逼人（对应 skill 表 actiontype）</summary>
+    private int? _actionFilter;
+
     public void Open(BattleManager battleManager, BattleUnit unit, Action<int> onSkillSelected,
-                     Func<int, bool> canUseOnTarget = null)
+                     Func<int, bool> canUseOnTarget = null, int? actionFilter = null)
     {
+        _actionFilter = actionFilter;
         Debug.Log($"[BattleSkillPanel] Open: unit={unit} 面板activeSelf={panelRoot != null && panelRoot.activeSelf} " +
                   $"canUseOnTarget={(canUseOnTarget != null ? "有" : "无")}");
         base.Open(battleManager);
@@ -167,15 +174,18 @@ public class BattleSkillPanel : BattleSubPanel
         // 行动点信息（置灰判断依据：cost > 剩余行动点）
         int remainingAp = unit.CurrentActionPoints;
 
-        // 添加普通攻击（固定消耗 1 行动点）
-        AddSkillItem(0, "普通攻击", false, IsInvalidForTarget(0) || remainingAp < 1,
-            "普通攻击：基础打击，消耗 1 行动点");
+        // 添加普通攻击（固定消耗 1 行动点）；咄咄逼人（actiontype=1）不显示普通攻击
+        if (!_actionFilter.HasValue || _actionFilter.Value == 0)
+            AddSkillItem(0, "普通攻击", false, IsInvalidForTarget(0) || remainingAp < 1,
+                "普通攻击：基础打击，消耗 1 行动点");
 
         // 添加技能
         foreach (int skillId in unit.AvailableSkills)
         {
             bool onCooldown = unit.IsSkillOnCooldown(skillId);
             var skillCfg = tables?.TbSkill.GetOrDefault(skillId);
+            if (_actionFilter.HasValue && skillCfg != null && skillCfg.Actiontype != _actionFilter.Value)
+                continue;
             string name = skillCfg != null ? skillCfg.Name : $"技能{skillId}";
 
             if (onCooldown)
@@ -237,10 +247,10 @@ public class BattleSkillPanel : BattleSubPanel
         if (detailTmp != null) detailTmp.text = intro ?? name;
         if (iconImg != null)
         {
+            // 图标始终显示：无 Icon 配置时保留模板自带图标，有配置时动态覆盖
+            iconImg.gameObject.SetActive(true);
             if (iconId > 0)
-                LoadIcon(iconImg, iconId);  // 有图标配置时动态加载
-            else
-                iconImg.gameObject.SetActive(false);  // 无图标配置时隐藏
+                LoadIcon(iconImg, iconId);
         }
 
         // 文本/图标设为不拦截点击，确保点击穿透到 bg 的 Button（否则命中文字区域时 onClick 不触发）
@@ -294,28 +304,42 @@ public class BattleSkillPanel : BattleSubPanel
     }
 
     /// <summary>
-    /// 异步加载技能图标到 icon；配置的图标资源不存在时隐藏 icon
+    /// 异步加载技能图标到 icon；配置的图标不存在时回退默认图标，仍失败则保留模板自带图标
     /// </summary>
     private void LoadIcon(Image target, int iconId)
     {
         string address = string.Format(skillIconPathFormat, iconId);
-        if (!KeyExists(address))
+        if (KeyExists(address))
         {
-            target.gameObject.SetActive(false);  // 图标地址不存在 → 隐藏
+            LoadSprite(target, address);
             return;
         }
 
+        // 该 id 没有对应图标 → 回退默认图标（skill_1）；默认图标本身缺失时保留模板图标
+        if (defaultSkillIconId > 0 && defaultSkillIconId != iconId)
+        {
+            string fallback = string.Format(skillIconPathFormat, defaultSkillIconId);
+            if (KeyExists(fallback))
+                LoadSprite(target, fallback);
+        }
+    }
+
+    /// <summary> 从 Addressables 异步加载 Sprite 并赋给 target；失败时保持 target 现有图标 </summary>
+    private void LoadSprite(Image target, string address)
+    {
         var handle = Addressables.LoadAssetAsync<Sprite>(address);
         handle.Completed += op =>
         {
-            if (op.Status == AsyncOperationStatus.Succeeded && target != null)
+            if (op.Status == AsyncOperationStatus.Succeeded && op.Result != null)
             {
-                target.sprite = op.Result;
+                if (target != null)
+                {
+                    target.sprite = op.Result;
+                    target.gameObject.SetActive(true);
+                }
             }
             else
             {
-                if (target != null)
-                    target.gameObject.SetActive(false);  // 加载失败 → 隐藏 icon
                 if (op.IsValid())
                     Addressables.Release(op);
             }

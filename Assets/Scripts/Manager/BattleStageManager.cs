@@ -85,6 +85,12 @@ public class BattleStageManager : MonoBehaviour
         // 表现层总控（技能释放演出序列）
         if (GetComponent<BattlePresenter>() == null)
             gameObject.AddComponent<BattlePresenter>();
+
+        // 目标选中提示（TargetSelectionIndicator）默认隐藏：
+        // 场景里这个节点是激活状态，不主动关会一直露在角色脚下
+        EnsureTargetIndicator();
+        if (_targetIndicator != null)
+            _targetIndicator.SetActive(false);
     }
 
     private void OnDestroy()

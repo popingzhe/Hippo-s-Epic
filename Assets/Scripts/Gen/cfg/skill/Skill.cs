@@ -32,6 +32,7 @@ public sealed partial class Skill : Luban.BeanBase
         Hitdelay = _buf.ReadFloat();
         Movekind = _buf.ReadInt();
         Animname = _buf.ReadString();
+        Actiontype = _buf.ReadInt();
     }
 
     public static Skill DeserializeSkill(ByteBuf _buf)
@@ -103,6 +104,10 @@ public sealed partial class Skill : Luban.BeanBase
     /// 释放攻击动画组合名（CompositionName 枚举，如 attack/attack2/attack3/skill/throw；空则默认用 attack 组合）
     /// </summary>
     public readonly string Animname;
+    /// <summary>
+    /// 战斗动作分类：0=暴力行为 1=咄咄逼人
+    /// </summary>
+    public readonly int Actiontype;
    
     public const int __ID__ = 1539215818;
     public override int GetTypeId() => __ID__;
@@ -130,6 +135,7 @@ public sealed partial class Skill : Luban.BeanBase
         + "hitdelay:" + Hitdelay + ","
         + "movekind:" + Movekind + ","
         + "animname:" + Animname + ","
+        + "actiontype:" + Actiontype + ","
         + "}";
     }
 }

@@ -479,10 +479,24 @@ public class BattleWindow : UIWindow
         var presenter = BattlePresenter.Instance;
         if (presenter != null)
         {
-            while (presenter.IsPlaying)
+            // 等待演出收尾，但都要有上限：演出被打断时不能卡死在结算界面
+            float guard = 0f;
+            while (presenter.IsPlaying && guard < 8f)
+            {
+                guard += Time.unscaledDeltaTime;
                 yield return null;
-            while (presenter.IsDeathPlaying)
+            }
+            if (presenter.IsPlaying)
+                Debug.LogWarning("[BattleWindow] 等待技能演出结束超时(8s)，强制进入结算");
+
+            guard = 0f;
+            while (presenter.IsDeathPlaying && guard < 5f)
+            {
+                guard += Time.unscaledDeltaTime;
                 yield return null;
+            }
+            if (presenter.IsDeathPlaying)
+                Debug.LogWarning("[BattleWindow] 等待死亡演出结束超时(5s)，强制返回");
         }
         // 再等半拍让飘字自然淡出
         yield return new WaitForSeconds(0.5f);
@@ -650,7 +664,7 @@ public class BattleWindow : UIWindow
         if (skillPanel != null)
         {
             _currentPanelDetail = DetailViolence;
-            skillPanel.Open(_battleManager, _currentUnit, OnSkillSelected);
+            skillPanel.Open(_battleManager, _currentUnit, OnSkillSelected, null, 0);   // 暴力行为：actiontype=0
             ShowDetail(_currentPanelDetail);
             if (subPanelContainer != null) subPanelContainer.SetActive(true);
             if (btnViolence != null) btnViolence.SetIsOnWithoutNotify(true);
@@ -663,10 +677,10 @@ public class BattleWindow : UIWindow
     {
         if (!CanOperate()) return;
         CloseAllSubPanels();
-        if (talkPanel != null)
+        if (skillPanel != null)
         {
             _currentPanelDetail = DetailTalk;
-            talkPanel.Open(_battleManager, OnTalkSelected);
+            skillPanel.Open(_battleManager, _currentUnit, OnSkillSelected, null, 1);   // 咄咄逼人：actiontype=1
             ShowDetail(_currentPanelDetail);
             if (subPanelContainer != null) subPanelContainer.SetActive(true);
             if (btnTalk != null) btnTalk.SetIsOnWithoutNotify(true);
@@ -1205,6 +1219,14 @@ public class BattleWindow : UIWindow
     {
         if (btn == null) return;
         var hl = btn.transform.Find("hl");
+        if (hl == null)
+        {
+            // hl 可能是按钮下的深层子节点（中间还隔着容器），逐层兜底查找
+            foreach (var t in btn.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "hl") { hl = t; break; }
+            }
+        }
         if (hl != null) hl.gameObject.SetActive(show);
     }
 

@@ -19,7 +19,8 @@
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
-    "animname": "skill"
+    "animname": "skill",
+    "actiontype": 0
   },
   {
     "id": 2,
@@ -41,7 +42,8 @@
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
-    "animname": "skill"
+    "animname": "skill",
+    "actiontype": 0
   },
   {
     "id": 3,
@@ -63,7 +65,8 @@
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
-    "animname": "skill"
+    "animname": "skill",
+    "actiontype": 0
   },
   {
     "id": 4,
@@ -85,7 +88,8 @@
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 1,
-    "animname": "attack"
+    "animname": "attack",
+    "actiontype": 0
   },
   {
     "id": 5,
@@ -107,7 +111,8 @@
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 1,
-    "animname": "attack"
+    "animname": "attack",
+    "actiontype": 0
   },
   {
     "id": 6,
@@ -136,6 +141,122 @@
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
-    "animname": "attack3"
+    "animname": "attack3",
+    "actiontype": 0
+  },
+  {
+    "id": 7,
+    "name": "测试铁拳",
+    "icon": 1,
+    "cost": 1,
+    "buffid": 0,
+    "skilltype": 2,
+    "dmgfunc": 1,
+    "effectparam": [
+      10
+    ],
+    "comment": "测试·物理伤害10（暴力行为）",
+    "targettype": 3,
+    "range": [
+      5
+    ],
+    "selectable": [],
+    "cooldown": 0,
+    "hitdelay": 0.2,
+    "movekind": 1,
+    "animname": "skill",
+    "actiontype": 0
+  },
+  {
+    "id": 8,
+    "name": "测试重击",
+    "icon": 1,
+    "cost": 2,
+    "buffid": 0,
+    "skilltype": 2,
+    "dmgfunc": 1,
+    "effectparam": [
+      25
+    ],
+    "comment": "测试·物理伤害25，耗2点（暴力行为）",
+    "targettype": 3,
+    "range": [
+      5
+    ],
+    "selectable": [],
+    "cooldown": 2,
+    "hitdelay": 0.2,
+    "movekind": 1,
+    "animname": "skill",
+    "actiontype": 0
+  },
+  {
+    "id": 9,
+    "name": "嘴炮",
+    "icon": 1,
+    "cost": 1,
+    "buffid": 0,
+    "skilltype": 3,
+    "dmgfunc": 1,
+    "effectparam": [
+      12
+    ],
+    "comment": "测试·魔法伤害12（咄咄逼人）",
+    "targettype": 3,
+    "range": [
+      5
+    ],
+    "selectable": [],
+    "cooldown": 0,
+    "hitdelay": 0.2,
+    "movekind": 0,
+    "animname": "skill",
+    "actiontype": 1
+  },
+  {
+    "id": 10,
+    "name": "阴阳怪气",
+    "icon": 1,
+    "cost": 2,
+    "buffid": 0,
+    "skilltype": 3,
+    "dmgfunc": 1,
+    "effectparam": [
+      8
+    ],
+    "comment": "测试·魔法伤害8并降攻（咄咄逼人）",
+    "targettype": 3,
+    "range": [
+      5
+    ],
+    "selectable": [],
+    "cooldown": 1,
+    "hitdelay": 0.2,
+    "movekind": 0,
+    "animname": "skill",
+    "actiontype": 1
+  },
+  {
+    "id": 11,
+    "name": "骂街",
+    "icon": 1,
+    "cost": 1,
+    "buffid": 0,
+    "skilltype": 3,
+    "dmgfunc": 1,
+    "effectparam": [
+      5
+    ],
+    "comment": "测试·魔法伤害5（咄咄逼人）",
+    "targettype": 3,
+    "range": [
+      5
+    ],
+    "selectable": [],
+    "cooldown": 0,
+    "hitdelay": 0.2,
+    "movekind": 0,
+    "animname": "skill",
+    "actiontype": 1
   }
 ]

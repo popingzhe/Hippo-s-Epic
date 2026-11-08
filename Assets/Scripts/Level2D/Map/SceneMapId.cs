@@ -14,6 +14,7 @@ public enum SceneMapId
 
     // --- Scene_Punk_City ---
     PunkCityGround, // Punk_City_Ground
+    PunkCityMovie, // Punk_City_movie
 
     // --- Scene_Sewer ---
     SewerSurface, // Sewer_Surface
@@ -37,6 +38,7 @@ public static class SceneMapIdExtensions
         { SceneMapId.BehindMoon, "Behind_Moon" },
         { SceneMapId.OuterCityGround, "Outer_City_Ground" },
         { SceneMapId.PunkCityGround, "Punk_City_Ground" },
+        { SceneMapId.PunkCityMovie, "Punk_City_movie" },
         { SceneMapId.SewerSurface, "Sewer_Surface" },
         { SceneMapId.OutSideGym, "Out_Side_Gym" },
         { SceneMapId.StaffLounge, "Staff Lounge" },
@@ -52,6 +54,7 @@ public static class SceneMapIdExtensions
         { SceneMapId.BehindMoon, "Scene_Outer_City" },
         { SceneMapId.OuterCityGround, "Scene_Outer_City" },
         { SceneMapId.PunkCityGround, "Scene_Punk_City" },
+        { SceneMapId.PunkCityMovie, "Scene_Punk_City" },
         { SceneMapId.SewerSurface, "Scene_Sewer" },
         { SceneMapId.OutSideGym, "Scene_Staff_Lounge" },
         { SceneMapId.StaffLounge, "Scene_Staff_Lounge" },
@@ -67,6 +70,7 @@ public static class SceneMapIdExtensions
         { "Behind_Moon", SceneMapId.BehindMoon },
         { "Outer_City_Ground", SceneMapId.OuterCityGround },
         { "Punk_City_Ground", SceneMapId.PunkCityGround },
+        { "Punk_City_movie", SceneMapId.PunkCityMovie },
         { "Sewer_Surface", SceneMapId.SewerSurface },
         { "Out_Side_Gym", SceneMapId.OutSideGym },
         { "Staff Lounge", SceneMapId.StaffLounge },

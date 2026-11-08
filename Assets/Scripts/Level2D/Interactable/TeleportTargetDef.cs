@@ -1,6 +1,6 @@
 ﻿// ============================================================
 // 自动生成文件 - 勿手动修改
-// 生成时间: 2026-10-25 18:18:16
+// 生成时间: 2026-11-08 19:08:06
 // 通过 Tools/Map/收集所有场景数据 重新生成
 // ============================================================
 
@@ -21,6 +21,12 @@ public static class TeleportTargetDef
 
     public static readonly SceneEntry[] Scenes = new SceneEntry[]
     {
+        new SceneEntry
+        {
+            sceneName = "Scene_Punk_City",
+            mapNames = new string[] { "Punk_City_Ground", "Punk_City_movie" },
+            interactables = System.Array.Empty<InteractableEntry>()
+        }
     };
 
     public static string[] AllSceneNames

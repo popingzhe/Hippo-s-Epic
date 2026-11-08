@@ -333,7 +333,7 @@ MonoBehaviour:
   dataTable: {fileID: 1067370069}
   inputManager: {fileID: 0}
   mainMenuSceneName: Scene_Init
-  startMap: 4
+  startMap: 6
   launchConfig: {fileID: 11400000, guid: 5a9f518bd038b594ca0c8b5617edea5b, type: 2}
   debugEnableDialogTest: 1
   debugDialogId: 1001001
@@ -341,6 +341,7 @@ MonoBehaviour:
   debugEnableHub: 1
   debugHubHotkey: 1
   debugEnableConditionTest: 1
+  debugEnableBuffTest: 1
   debugEnableBattleTest: 1
   debugBattleId: 1
 --- !u!1 &75268057

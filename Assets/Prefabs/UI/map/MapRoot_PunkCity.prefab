@@ -190,7 +190,7 @@ MonoBehaviour:
   - nodeId: 6
     button: {fileID: 6247996960224392723}
     targetMap: 2
-    conditionId: 0
+    conditionId: 15
   - nodeId: 7
     button: {fileID: 3450277092458789610}
     targetMap: 5

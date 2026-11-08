@@ -1,4 +1,5 @@
 using TMPro;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -84,9 +85,42 @@ public class BagItem : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, I
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Right)
+        {
             onRightClick?.Invoke(this);
-        else
-            onClick?.Invoke(this);
+            return;
+        }
+
+        PlayClickShake();
+        onClick?.Invoke(this);
+    }
+
+    /// <summary>
+    /// 点击物品时的图标抖动（DOTween）：位置抖 + 缩放脉冲。
+    /// 用 SetUpdate(true) 走 unscaled 时间，背包在暂停(timeScale=0)下也能抖。
+    /// </summary>
+    private void PlayClickShake()
+    {
+        if (icon == null) return;
+        var rt = icon.rectTransform;
+        if (rt == null) return;
+
+        // 打断上一次未播完的抖动，避免连点时动画叠加偏移
+        rt.DOKill();
+        rt.localScale = Vector3.one;
+
+        rt.DOShakeAnchorPos(duration: 0.25f,
+                            strength: new Vector2(7f, 5f),
+                            vibrato: 20,
+                            randomness: 40f,
+                            snapping: false,
+                            fadeOut: true)
+          .SetUpdate(true)
+          .SetTarget(rt);
+
+        rt.DOPunchScale(Vector3.one * 0.12f, 0.22f, vibrato: 8, elasticity: 0.7f)
+          .SetUpdate(true)
+          .SetTarget(rt)
+          .OnComplete(() => { if (rt != null) rt.localScale = Vector3.one; });
     }
 
     public void OnBeginDrag(PointerEventData eventData)

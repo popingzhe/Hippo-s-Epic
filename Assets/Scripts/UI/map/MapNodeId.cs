@@ -14,4 +14,5 @@ public enum MapNodeId
     InnerHospital = 9,
     BehindMoon = 10,
     OutSideGym = 11,
+    PunkCityMovie = 12,
 }

@@ -108,3 +108,5 @@ AGENTS.md
 
 # VSCode相关文件
 .vscode/
+# Unity 为 csproj 生成的 meta（垃圾文件）
+*.csproj.meta

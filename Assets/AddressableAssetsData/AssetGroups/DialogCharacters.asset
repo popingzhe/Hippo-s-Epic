@@ -130,6 +130,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - npc_prefab
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef51670f9b257154d999efedc4be4b8d
+    m_Address: Assets/Prefabs/npc/monkeypaw
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - npc_prefab
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: dd90b6ecff8020e40aa537a3ddf43594, type: 2}
   m_SchemaSet:

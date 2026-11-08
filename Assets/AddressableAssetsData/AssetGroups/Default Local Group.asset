@@ -351,13 +351,20 @@ MonoBehaviour:
   - m_GUID: 4faf7e9f81d381f40bd14d87022829c8
     m_Address: Assets/Prefabs/UI/common/CommonTipPanel
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - ui_prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 599057e87588e874eb161ebffef10c8b
     m_Address: Assets/Art/Sprites/UI/battle/skill_icon/skill_1
     m_ReadOnly: 0
     m_SerializedLabels:
     - skill_icon
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ec3171c34f4ca744bc1cffbeb0f3159
+    m_Address: Assets/Prefabs/UI/common/slider_bg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ui_prefab
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: dd90b6ecff8020e40aa537a3ddf43594, type: 2}

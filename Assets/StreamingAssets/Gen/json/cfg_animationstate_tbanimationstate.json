@@ -481,12 +481,5 @@
     "statename": "walk",
     "prefabtype": 1,
     "slotstateid": 0
-  },
-  {
-    "id": 13000,
-    "personid": 13,
-    "statename": "idle",
-    "prefabtype": 1,
-    "slotstateid": 0
   }
 ]

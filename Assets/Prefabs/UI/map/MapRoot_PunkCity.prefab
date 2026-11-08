@@ -181,7 +181,7 @@ MonoBehaviour:
     conditionId: 0
   - nodeId: 1
     button: {fileID: 6269418372276423275}
-    targetMap: 9
+    targetMap: 7
     conditionId: 0
   - nodeId: 3
     button: {fileID: 621856698228769782}

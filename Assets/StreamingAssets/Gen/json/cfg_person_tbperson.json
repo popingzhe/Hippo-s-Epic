@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "河马",
+    "battlepool_id": 1,
     "hp": 20,
     "hpmax": 20,
     "destroy": 8,
@@ -35,6 +36,7 @@
   {
     "id": 2,
     "name": "教练",
+    "battlepool_id": 1,
     "hp": 10,
     "hpmax": 10,
     "destroy": 8,
@@ -66,6 +68,7 @@
   {
     "id": 3,
     "name": "拳王",
+    "battlepool_id": 1,
     "hp": 60,
     "hpmax": 60,
     "destroy": 0,
@@ -95,6 +98,7 @@
   {
     "id": 4,
     "name": "蟑螂灯",
+    "battlepool_id": 1,
     "hp": 50,
     "hpmax": 50,
     "destroy": 0,
@@ -121,6 +125,7 @@
   {
     "id": 5,
     "name": "alien_01",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,
@@ -146,6 +151,7 @@
   {
     "id": 6,
     "name": "alien_02",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,
@@ -171,6 +177,7 @@
   {
     "id": 7,
     "name": "coach_fight",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,
@@ -196,6 +203,7 @@
   {
     "id": 8,
     "name": "fog",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,
@@ -221,6 +229,7 @@
   {
     "id": 9,
     "name": "light",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,
@@ -246,6 +255,7 @@
   {
     "id": 10,
     "name": "npc_01",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,
@@ -271,6 +281,7 @@
   {
     "id": 11,
     "name": "npc_02",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,
@@ -296,6 +307,7 @@
   {
     "id": 12,
     "name": "quanwang_pixel",
+    "battlepool_id": 1,
     "hp": 0,
     "hpmax": 0,
     "destroy": 0,

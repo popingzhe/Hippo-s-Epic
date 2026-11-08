@@ -16,6 +16,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
@@ -39,6 +40,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
@@ -62,6 +64,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
@@ -85,6 +88,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 1,
@@ -108,6 +112,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 1,
@@ -138,6 +143,7 @@
       4,
       7
     ],
+    "skilllog": "巨型脑震荡以及%s点伤害",
     "cooldown": 0,
     "hitdelay": 0,
     "movekind": 0,
@@ -161,6 +167,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "%s点伤害",
     "cooldown": 0,
     "hitdelay": 0.2,
     "movekind": 1,
@@ -184,6 +191,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 2,
     "hitdelay": 0.2,
     "movekind": 1,
@@ -207,6 +215,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 0,
     "hitdelay": 0.2,
     "movekind": 0,
@@ -230,6 +239,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 1,
     "hitdelay": 0.2,
     "movekind": 0,
@@ -253,6 +263,7 @@
       5
     ],
     "selectable": [],
+    "skilllog": "",
     "cooldown": 0,
     "hitdelay": 0.2,
     "movekind": 0,

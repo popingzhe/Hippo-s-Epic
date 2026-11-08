@@ -81,6 +81,10 @@ public partial class Tables
     /// 战斗表
     /// </summary>
     public cfg.battle.TbBattle TbBattle {get; }
+    /// <summary>
+    /// 战斗日志表
+    /// </summary>
+    public cfg.battlelog.TbBattlelog TbBattlelog {get; }
 
     public Tables(System.Func<string, ByteBuf> loader)
     {
@@ -101,6 +105,7 @@ public partial class Tables
         TbCharacterlevel = new cfg.characterlevel.TbCharacterlevel(loader("cfg_characterlevel_tbcharacterlevel"));
         TbSkill = new cfg.skill.TbSkill(loader("cfg_skill_tbskill"));
         TbBattle = new cfg.battle.TbBattle(loader("cfg_battle_tbbattle"));
+        TbBattlelog = new cfg.battlelog.TbBattlelog(loader("cfg_battlelog_tbbattlelog"));
         ResolveRef();
     }
     
@@ -123,6 +128,7 @@ public partial class Tables
         TbCharacterlevel.ResolveRef(this);
         TbSkill.ResolveRef(this);
         TbBattle.ResolveRef(this);
+        TbBattlelog.ResolveRef(this);
     }
 }
 

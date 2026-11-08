@@ -18,6 +18,7 @@ public sealed partial class Person : Luban.BeanBase
     {
         Id = _buf.ReadInt();
         Name = _buf.ReadString();
+        BattlepoolId = _buf.ReadInt();
         Hp = _buf.ReadInt();
         Hpmax = _buf.ReadInt();
         Destroy = _buf.ReadInt();
@@ -52,6 +53,10 @@ public sealed partial class Person : Luban.BeanBase
     /// 角色名称
     /// </summary>
     public readonly string Name;
+    /// <summary>
+    /// 对应战斗文本池id
+    /// </summary>
+    public readonly int BattlepoolId;
     /// <summary>
     /// 当前生命值
     /// </summary>
@@ -146,6 +151,7 @@ public sealed partial class Person : Luban.BeanBase
         return "{ "
         + "id:" + Id + ","
         + "name:" + Name + ","
+        + "battlepoolId:" + BattlepoolId + ","
         + "hp:" + Hp + ","
         + "hpmax:" + Hpmax + ","
         + "destroy:" + Destroy + ","

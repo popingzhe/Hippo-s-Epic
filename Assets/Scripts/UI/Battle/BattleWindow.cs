@@ -67,6 +67,17 @@ public class BattleWindow : UIWindow
     private Camera _mainCamera;
     private BattleUnit _currentCursorTarget;
 
+    /// <summary> 本次行动使用的技能 id（0=普通攻击），供伤害日志取 skill.skilllog </summary>
+    private int _currentSkillId;
+
+    // ── 一次行动内的日志合并：多个受击者/多个阵亡合成一句，避免刷屏 ──
+    private readonly List<string> _pendingTargetNames = new List<string>();
+    private readonly List<string> _pendingDeathNames = new List<string>();
+    private BattleUnit _pendingActor;
+    private int _pendingDamageTotal;
+    private BattleLogCellType _pendingDamageCell = BattleLogCellType.Left;
+    private Coroutine _pendingLogCoroutine;
+
     /// <summary> 目标选择开始时刻（用于忽略选技能那一下的点击，避免误释放） </summary>
     private float _targetSelectStartTime;
 
@@ -349,15 +360,17 @@ public class BattleWindow : UIWindow
         // 更新场景血条
         if (_stageManager != null)
             _stageManager.UpdateHealthBar(unit);
-        // 结果归入攻击方阵营：玩家方攻击结果在左，敌方攻击结果在右；日志具体到人
-        if (logPanel != null)
+
+        // 不逐条打日志：累计到本次行动结算完，合并成一条（见 FlushActionLog）
+        if (actor != null)
         {
-            var cell = actor != null && !actor.IsPlayerSide ? BattleLogCellType.Right : BattleLogCellType.Left;
-            if (actor != null)
-                logPanel.AddLog($"{GetUnitName(actor)} 对 {GetUnitName(unit)} 造成 {damage} 点伤害", cell);
-            else
-                logPanel.AddLog($"{GetUnitName(unit)} 受到 {damage} 点伤害", cell);
+            _pendingActor = actor;
+            _pendingDamageCell = actor.IsPlayerSide ? BattleLogCellType.Left : BattleLogCellType.Right;
         }
+        string targetName = GetUnitName(unit);
+        if (!_pendingTargetNames.Contains(targetName)) _pendingTargetNames.Add(targetName);
+        _pendingDamageTotal += damage;
+        ScheduleActionLogFlush();
     }
 
     private void OnHealed(BattleUnit actor, BattleUnit unit, int amount)
@@ -377,7 +390,19 @@ public class BattleWindow : UIWindow
     /// <summary> 行动记录：玩家/友方行动在左，敌方行动在右；目标具体到每个人 </summary>
     private void OnSkillExecuted(BattleUnit actor, int skillId, List<BattleUnit> targets)
     {
+        _currentSkillId = skillId;
+
+        // 新行动开始：清空上一次行动的累计
+        _pendingTargetNames.Clear();
+        _pendingDeathNames.Clear();
+        _pendingDamageTotal = 0;
+        _pendingActor = actor;
+
         if (logPanel == null || actor == null) return;
+
+        // 伤害类技能不在这里播报，等结算完合并成一条（避免"使用XX攻击YY"+"伤害"两条）
+        var dmgCfg = skillId > 0 && _battleManager != null ? _battleManager.GetTables().TbSkill.GetOrDefault(skillId) : null;
+        if (dmgCfg != null && (dmgCfg.Skilltype == 2 || dmgCfg.Skilltype == 3)) return;
 
         string actorName = GetUnitName(actor);
         string skillName = "普通攻击";
@@ -419,9 +444,87 @@ public class BattleWindow : UIWindow
     {
         if (_stageManager != null)
             _stageManager.UpdateHealthBar(unit);
-        // 阵亡提示统一居中
-        if (logPanel != null)
-            logPanel.AddDeathLog(GetUnitName(unit), BattleLogCellType.Middle);
+        // 阵亡提示合并成一句（同名只提示一次）
+        string deadName = GetUnitName(unit);
+        if (!_pendingDeathNames.Contains(deadName)) _pendingDeathNames.Add(deadName);
+        ScheduleActionLogFlush();
+    }
+
+    /// <summary> 拖延一小会儿再合并输出，等这次行动的所有伤害结算完 </summary>
+    private void ScheduleActionLogFlush()
+    {
+        if (_pendingLogCoroutine != null) StopCoroutine(_pendingLogCoroutine);
+        _pendingLogCoroutine = StartCoroutine(FlushActionLogRoutine());
+    }
+
+    private System.Collections.IEnumerator FlushActionLogRoutine()
+    {
+        yield return new WaitForSeconds(0.3f);
+        FlushActionLog();
+    }
+
+    /// <summary>
+    /// 把一次行动内的所有伤害/阵亡合并成 1~2 条日志：
+    /// 受击者用"、"连起来放在同一句池文案里，伤害取合计值。
+    /// </summary>
+    private void FlushActionLog()
+    {
+        _pendingLogCoroutine = null;
+        if (logPanel == null) { ClearPendingLog(); return; }
+
+        var tables = _battleManager != null ? _battleManager.GetTables() : null;
+
+        // ① 伤害：所有受击者合成一句
+        if (_pendingTargetNames.Count > 0 && _pendingActor != null)
+        {
+            string targetStr = string.Join("、", _pendingTargetNames);
+            var skillCfg = _currentSkillId > 0 && tables != null ? tables.TbSkill.GetOrDefault(_currentSkillId) : null;
+            string effect = BattleLogText.BuildEffect(skillCfg != null ? skillCfg.Skilllog : null, _pendingDamageTotal);
+
+            string pooled = null;
+            var actorCfg = tables != null ? tables.TbPerson.GetOrDefault(_pendingActor.PersonId) : null;
+            int poolId = actorCfg != null ? actorCfg.BattlepoolId : 0;
+            if (tables != null && poolId > 0)
+            {
+                int total = 0;
+                foreach (var r in tables.TbBattlelog.DataList)
+                    if (r.LogpoolId == poolId) total++;
+                if (total > 0)
+                {
+                    int pick = Random.Range(0, total);
+                    int idx = 0;
+                    foreach (var r in tables.TbBattlelog.DataList)
+                    {
+                        if (r.LogpoolId != poolId) continue;
+                        if (idx++ == pick)
+                        {
+                            pooled = BattleLogText.Format(r.Logcontext, r.LogcontextType,
+                                GetUnitName(_pendingActor), targetStr, effect);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(pooled))
+                logPanel.AddLog(pooled, _pendingDamageCell);
+            else
+                logPanel.AddLog($"{GetUnitName(_pendingActor)} 对 {targetStr} 造成 {_pendingDamageTotal} 点伤害", _pendingDamageCell);
+        }
+
+        // ② 阵亡：合成一句（中间气泡）
+        if (_pendingDeathNames.Count > 0)
+            logPanel.AddLog($"<color=#FF0000>{string.Join("、", _pendingDeathNames)} 倒下了！</color>", BattleLogCellType.Middle);
+
+        ClearPendingLog();
+    }
+
+    private void ClearPendingLog()
+    {
+        _pendingTargetNames.Clear();
+        _pendingDeathNames.Clear();
+        _pendingDamageTotal = 0;
+        _pendingActor = null;
     }
 
     private void OnUnitTurnEnd(BattleUnit unit)
@@ -937,17 +1040,27 @@ public class BattleWindow : UIWindow
         var unit = FindUnitByGameObject(hit.gameObject);
         if (unit == null || !unit.IsAlive) return;
 
-        // 只接受有效目标（物品→按物品 func 阵营+param2 范围；技能→九宫格有效范围）
+        // 先判断是不是有效落点（物品→func 阵营+param2 范围；技能→九宫格 selectable/range）
+        bool valid = _selectedItemId > 0
+            ? IsTargetValidForItem(unit, _selectedItemId)
+            : IsTargetValidForSkill(unit, _selectedSkillId);
+
+        if (!valid)
+        {
+            // 不是有效落点：只把"选中目标"重置到点到的这个人身上（选中与有效分离），不释放技能
+            _currentCursorTarget = unit;
+            if (_stageManager != null)
+                _stageManager.ShowTargetSelected(unit);
+            if (logPanel != null)
+                logPanel.AddLog($"选中 {GetUnitName(unit)}：该位置不能作为落点", BattleLogCellType.Middle);
+            return;
+        }
+
+        // 有效落点：直接释放
         if (_selectedItemId > 0)
-        {
-            if (!IsTargetValidForItem(unit, _selectedItemId)) return;
             _battleManager.PlayerUseItem(_selectedItemId, unit.SlotIndex);
-        }
         else
-        {
-            if (!IsTargetValidForSkill(unit, _selectedSkillId)) return;
             _battleManager.PlayerUseSkill(_selectedSkillId, unit.SlotIndex);
-        }
 
         // 显示目标选中标签
         if (_stageManager != null)

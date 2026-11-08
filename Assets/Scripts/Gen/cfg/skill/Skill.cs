@@ -28,6 +28,7 @@ public sealed partial class Skill : Luban.BeanBase
         Targettype = _buf.ReadInt();
         {int n0 = _buf.ReadSize(); Range = new System.Collections.Generic.List<int>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { int _e0;  _e0 = _buf.ReadInt(); Range.Add(_e0);}}
         {int n0 = _buf.ReadSize(); Selectable = new System.Collections.Generic.List<int>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { int _e0;  _e0 = _buf.ReadInt(); Selectable.Add(_e0);}}
+        Skilllog = _buf.ReadString();
         Cooldown = _buf.ReadInt();
         Hitdelay = _buf.ReadFloat();
         Movekind = _buf.ReadInt();
@@ -89,6 +90,10 @@ public sealed partial class Skill : Luban.BeanBase
     /// </summary>
     public readonly System.Collections.Generic.List<int> Selectable;
     /// <summary>
+    /// 用于描述战斗技能的效果
+    /// </summary>
+    public readonly string Skilllog;
+    /// <summary>
     /// 0
     /// </summary>
     public readonly int Cooldown;
@@ -131,6 +136,7 @@ public sealed partial class Skill : Luban.BeanBase
         + "targettype:" + Targettype + ","
         + "range:" + Luban.StringUtil.CollectionToString(Range) + ","
         + "selectable:" + Luban.StringUtil.CollectionToString(Selectable) + ","
+        + "skilllog:" + Skilllog + ","
         + "cooldown:" + Cooldown + ","
         + "hitdelay:" + Hitdelay + ","
         + "movekind:" + Movekind + ","

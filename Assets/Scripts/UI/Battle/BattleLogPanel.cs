@@ -188,6 +188,9 @@ public class BattleLogPanel : MonoBehaviour
             : logLeftTemplate;
         if (template == null) template = logLeftTemplate ?? logMiddleTemplate ?? logRightTemplate;
 
+        // 记录加日志前的滚动位置：只有本来就贴底才自动跟随，否则会把正在翻历史的玩家拽回底部
+        bool wasAtBottom = _scrollRect == null || _scrollRect.verticalNormalizedPosition <= 0.05f;
+
         if (template != null)
         {
             var go = Instantiate(template, logContainer);
@@ -209,8 +212,8 @@ public class BattleLogPanel : MonoBehaviour
         entry.color = color;
         _logEntries.Add(entry);
 
-        // 滚到底部，让最新日志可见（VerticalLayoutGroup 从上往下排，最新在最下）
-        ScrollToBottom();
+        // 只在原本贴底时跟随到底部；玩家往上翻时不打断
+        if (wasAtBottom) ScrollToBottom();
     }
 
     /// <summary>

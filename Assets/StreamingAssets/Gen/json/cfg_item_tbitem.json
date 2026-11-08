@@ -379,14 +379,14 @@
     "icon": 1009,
     "price": 0,
     "stackable": false,
-    "tip": "外星人脑子",
+    "tip": "外星人脑子，或许是通往宇宙的秘密钥匙，不过用来涮火锅吃也不错。",
     "func": [],
     "param1": [],
     "param2": [],
     "param3": [],
     "battletip": "",
-    "gethint": "",
-    "getexclaim": ""
+    "gethint": "你偷偷拿走了肇事者的大脑，希望它除了让狗吃掉还有其他的作用吧。",
+    "getexclaim": "真黏糊。"
   },
   {
     "id": 1010,

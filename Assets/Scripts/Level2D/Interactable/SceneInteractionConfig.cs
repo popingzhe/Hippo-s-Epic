@@ -2,6 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary> 交互阶段动画列表的播放方式 </summary>
+public enum PhaseAnimOrder
+{
+    Sequential = 0,   // 顺序：按列表依次播放，播完回到第一个
+    Random = 1        // 随机：每次随机挑一个（不会连续重复同一个）
+}
+
 [Serializable]
 public class InteractionPhase
 {
@@ -24,7 +31,14 @@ public class InteractionPhase
     public bool playAnimation;
     [Tooltip("此状态下播放动画的 AnimationController 组件\n留空则不播放动画")]
     public AnimationController animationController;
-    [Tooltip("此状态下播放的组合动画名称")]
+    [Tooltip("此状态下播放的组合动画列表\n顺序：按列表依次播放并循环；随机：每次随机挑一个")]
+    public List<CompositionName> compositions = new List<CompositionName>();
+
+    [Tooltip("列表播放方式")]
+    public PhaseAnimOrder animationOrder = PhaseAnimOrder.Sequential;
+
+    [HideInInspector]
+    [Tooltip("旧字段：单个组合动画，已由 compositions 列表取代（列表为空时仍兼容使用）")]
     public CompositionName composition = CompositionName.Idle;
 
     [Tooltip("是否可重复交互。false 时首次交互后不再响应")]

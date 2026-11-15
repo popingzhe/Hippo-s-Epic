@@ -40,6 +40,8 @@ public class InteractableEditor : Editor
         var playAnimationProp = phase.FindPropertyRelative("playAnimation");
         var animationControllerProp = phase.FindPropertyRelative("animationController");
         var compositionProp = phase.FindPropertyRelative("composition");
+        var compositionsProp = phase.FindPropertyRelative("compositions");
+        var animationOrderProp = phase.FindPropertyRelative("animationOrder");
         var canRepeatProp = phase.FindPropertyRelative("canRepeat");
         var hideAfterExecuteProp = phase.FindPropertyRelative("hideAfterExecute");
         var destroySelfProp = phase.FindPropertyRelative("destroySelf");
@@ -86,7 +88,13 @@ public class InteractableEditor : Editor
         {
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(animationControllerProp, new GUIContent("AnimationController"));
-            DrawCompositionDropdown(compositionProp, animationControllerProp, playAnimationProp);
+            EditorGUILayout.PropertyField(animationOrderProp, new GUIContent("播放方式", "Sequential：按列表顺序循环播放；Random：随机播放，避免连续重复同一项"));
+            EditorGUILayout.PropertyField(compositionsProp, new GUIContent("动画列表", "展开列表并添加动画名称；顺序播放时按列表从上到下播放"), true);
+            if (compositionsProp.arraySize == 0)
+            {
+                EditorGUILayout.HelpBox("动画列表为空时，沿用下面的旧单动画配置；添加列表项后，以列表为准。", MessageType.Info);
+                DrawCompositionDropdown(compositionProp, animationControllerProp, playAnimationProp);
+            }
             EditorGUI.indentLevel--;
         }
 

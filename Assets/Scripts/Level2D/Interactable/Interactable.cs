@@ -31,6 +31,7 @@ public class Interactable : MonoBehaviour
 
     private int _currentState;
     private InteractionPhase _currentPhase;
+    private Coroutine _phaseAnimRoutine;
     private bool _playerInside;
     private bool _hasExecuted;
     private int _playerInsideCount;
@@ -85,16 +86,103 @@ public class Interactable : MonoBehaviour
 
     private void ApplyAnimation(InteractionPhase phase)
     {
+        StopPhaseAnimation();
+
         if (!phase.playAnimation) return;
         if (phase.animationController == null) return;
 
         var ctrl = phase.animationController;
         if (!ctrl.IsInitialized) return;
+        if (ctrl.Config == null) return;
 
-        if (ctrl.Config != null && ctrl.Config.HasComposition(phase.composition))
+        // 收集本阶段要播的动画：优先用列表，列表为空则兼容旧的单个 composition
+        var wanted = new List<CompositionName>();
+        if (phase.compositions != null)
         {
-            ctrl.PlayComposition(phase.composition);
+            foreach (var c in phase.compositions)
+                if (!wanted.Contains(c)) wanted.Add(c);
         }
+        if (wanted.Count == 0)
+            wanted.Add(phase.composition);
+
+        // 过滤掉配置里不存在的组合，并给出告警（方便美术排查配漏）
+        var valid = new List<CompositionName>();
+        foreach (var c in wanted)
+        {
+            if (ctrl.Config.HasComposition(c)) valid.Add(c);
+            else Debug.LogWarning($"[Interactable] {name} 阶段 state={phase.state} 的组合动画 {c} 在 {ctrl.Config.name} 里不存在 ⇒ 已跳过");
+        }
+        if (valid.Count == 0) return;
+
+        // 只有一个：直接循环播（保持旧行为）
+        if (valid.Count == 1)
+        {
+            ctrl.PlayComposition(valid[0]);
+            return;
+        }
+
+        // 多个：起协程按 顺序/随机 轮播
+        _phaseAnimRoutine = StartCoroutine(PlayPhaseAnimationListRoutine(ctrl, valid, phase.animationOrder));
+    }
+
+    /// <summary> 停掉上一次阶段的轮播协程（不主动停已有动画，保持原行为） </summary>
+    private void StopPhaseAnimation()
+    {
+        if (_phaseAnimRoutine != null)
+        {
+            StopCoroutine(_phaseAnimRoutine);
+            _phaseAnimRoutine = null;
+        }
+    }
+
+    /// <summary>
+    /// 列表轮播：每个动画循环播一个完整时长后切下一个。
+    /// Sequential = 按列表顺序逐个播；Random = 每次随机挑（避免连续重复）。
+    /// </summary>
+    private System.Collections.IEnumerator PlayPhaseAnimationListRoutine(AnimationController ctrl,
+        List<CompositionName> list, PhaseAnimOrder order)
+    {
+        int index = 0;
+        int last = -1;
+
+        while (true)
+        {
+            int pick;
+            if (order == PhaseAnimOrder.Random)
+            {
+                pick = UnityEngine.Random.Range(0, list.Count);
+                if (list.Count > 1 && pick == last) pick = (pick + 1) % list.Count;
+            }
+            else
+            {
+                pick = index % list.Count;
+            }
+
+            var name = list[pick];
+            ctrl.PlayComposition(name);
+
+            float dur = GetCompositionDuration(ctrl, name);
+            if (dur <= 0.05f) dur = 2f;   // 拿不到时长时的兜底，避免疯狂切换
+            yield return new WaitForSeconds(dur);
+
+            last = pick;
+            index++;
+        }
+    }
+
+    /// <summary> 组合动画的时长 = 它各层级时长里最长的那个 </summary>
+    private float GetCompositionDuration(AnimationController ctrl, CompositionName name)
+    {
+        var comp = ctrl.Config != null ? ctrl.Config.GetComposition(name) : null;
+        if (comp == null || comp.layers == null || comp.layers.Count == 0) return 0f;
+
+        float max = 0f;
+        foreach (var layer in comp.layers)
+        {
+            float d = ctrl.GetAnimationDuration(layer.layerName);
+            if (d > max) max = d;
+        }
+        return max;
     }
 
     private void ApplyChildNodes(InteractionPhase phase)
@@ -781,6 +869,8 @@ public class Interactable : MonoBehaviour
 
     private void OnDisable()
     {
+        StopPhaseAnimation();
+
         if (ConditionSystem.HasInstance)
             ConditionSystem.Instance.OnConditionChanged -= OnConditionChanged;
     }

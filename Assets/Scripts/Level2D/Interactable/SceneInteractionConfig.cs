@@ -115,11 +115,11 @@ public class ButtonOption
     public string buttonText = UIStrings.Interaction.DefaultButton;
 
     [Header("操作")]
-    [Tooltip("交互类型：HintOnly=仅提示 | Dialogue=对话 | Pickup=拾取 | Consume=消耗物品 | Teleport=传送 | SetCondition=修改条件满足情况")]
+    [Tooltip("交互类型：HintOnly=仅提示 | Dialogue=对话 | Pickup=拾取 | Consume=消耗物品 | Teleport=传送 | SetCondition=修改条件满足情况 | OpenUI=打开UI面板")]
     public InteractionType type;
-    [Tooltip("Dialogue → 对话表ID\nPickup/Consume → 物品ID\nSetCondition → 目标条件ID（condition 表 id）")]
+    [Tooltip("Dialogue → 对话表ID\nPickup/Consume → 物品ID\nSetCondition → 目标条件ID（condition 表 id）\nOpenUI → 可选整数参数，0=不传参数")]
     public int dataId;
-    [Tooltip("Teleport(场景内) → 目标地图名（Map名称）\nTeleport(跨场景) → 留空，使用 param2\nPickup/Consume → 扣除/添加数量（默认1）\nSetCondition → 目标状态：1/true/留空=设为已满足，0/false=设为未满足")]
+    [Tooltip("Teleport(场景内) → 目标地图名（Map名称）\nTeleport(跨场景) → 留空，使用 param2\nPickup/Consume → 扣除/添加数量（默认1）\nSetCondition → 目标状态：1/true/留空=设为已满足，0/false=设为未满足\nOpenUI → UIWindowRegistry 注册的面板 key（在下拉中选择）")]
     public string param1;
     [Tooltip("Teleport(跨场景) → 目标场景名（如 Scene_Staff_Lounge）\n需要 GameApp 存在才能跨场景传送")]
     public string param2;
@@ -152,5 +152,9 @@ public enum InteractionType
     LoseBuff,
 
     /// <summary>进入战斗：dataId=battle 表ID（点击后加载战斗场景开打）</summary>
-    EnterBattle
+    EnterBattle,
+
+    /// <summary>打开UI面板：param1=已注册面板key，dataId=可选整数参数（0=无）</summary>
+    [InspectorName("打开UI面板 (OpenUI)")]
+    OpenUI = 9
 }

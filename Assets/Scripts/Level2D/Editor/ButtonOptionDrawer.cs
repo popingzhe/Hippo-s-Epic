@@ -59,6 +59,8 @@ public class ButtonOptionDrawer : PropertyDrawer
             param1Prop.stringValue = "";
             param2Prop.stringValue = "";
             tpModeProp.intValue = (int)TeleportMode.ToInteractable;
+            if (tt == InteractionType.OpenUI)
+                dataIdProp.intValue = 0;
             property.serializedObject.ApplyModifiedProperties();
             return;
         }
@@ -92,6 +94,45 @@ public class ButtonOptionDrawer : PropertyDrawer
                     y += (lineH + sp) * 2;
                     break;
             }
+        }
+        else if (tt == InteractionType.OpenUI)
+        {
+            var keys = UIWindowRegistry.GetWindowKeys();
+            string current = param1Prop.stringValue ?? "";
+            bool unknown = !string.IsNullOrEmpty(current) && System.Array.IndexOf(keys, current) < 0;
+
+            // 未注册值单独追加一项：既不占用“(无)”槽位，也不会被误点清空
+            var options = new GUIContent[keys.Length + 1 + (unknown ? 1 : 0)];
+            options[0] = new GUIContent("(无)");
+            for (int i = 0; i < keys.Length; i++)
+                options[i + 1] = new GUIContent(keys[i]);
+            if (unknown)
+                options[keys.Length + 1] = new GUIContent("（未注册）" + current);
+
+            int selected = unknown ? keys.Length + 1 : System.Array.IndexOf(keys, current) + 1;
+            EditorGUI.BeginChangeCheck();
+            int next = EditorGUI.Popup(new Rect(position.x, y, w, lineH),
+                new GUIContent("目标UI面板"), selected, options);
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (next == 0)
+                    param1Prop.stringValue = "";
+                else if (next <= keys.Length)
+                    param1Prop.stringValue = keys[next - 1];
+                // next == keys.Length + 1（未注册项）：保持原值，不清空
+            }
+            y += lineH + sp;
+
+            var kind = UIWindowRegistry.GetArgsKind(param1Prop.stringValue);
+            string idLabel = kind == UIPanelArgs.Int ? "面板参数ID（必填）"
+                : kind == UIPanelArgs.MapRootId ? "面板参数ID（地图编号）"
+                : "面板参数ID";
+            string idTip = kind == UIPanelArgs.Int ? "该面板需要参数ID（对话ID/物品ID），填 0 会被拒绝并保持可重试"
+                : kind == UIPanelArgs.MapRootId ? "参数ID 会转成地图编号，0 = 朋克城"
+                : "普通面板填 0：运行时传 null";
+            dataIdProp.intValue = EditorGUI.IntField(new Rect(position.x, y, w, lineH),
+                new GUIContent(idLabel, idTip), dataIdProp.intValue);
+            y += lineH + sp;
         }
         else
         {
@@ -270,7 +311,7 @@ public class ButtonOptionDrawer : PropertyDrawer
         {
             lines += 3;
         }
-        else if (tt == InteractionType.Consume || tt == InteractionType.SetCondition)
+        else if (tt == InteractionType.Consume || tt == InteractionType.SetCondition || tt == InteractionType.OpenUI)
         {
             lines += 2;
         }

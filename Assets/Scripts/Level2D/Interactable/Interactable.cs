@@ -430,6 +430,10 @@ public class Interactable : MonoBehaviour
 
         int added = ExecuteButtonAction(button);
 
+        // UI配置无效/管理器不可用时保持可重试，不消耗一次性交互或切阶段。
+        if (button.type == InteractionType.OpenUI && added < 0)
+            return;
+
         _hasExecuted = true;
 
         var phase = _currentPhase;
@@ -553,6 +557,16 @@ public class Interactable : MonoBehaviour
 
         Debug.Log($"[Interactable] 进入战斗 battleId={button.dataId}");
         app.EnterBattle(button.dataId);
+    }
+
+    private bool ExecuteOpenUI(ButtonOption button)
+    {
+        var uiManager = ManagerRegistry.Get<UIManager>();
+        if (UIWindowRegistry.TryOpen(uiManager, button.param1, button.dataId, out string error))
+            return true;
+
+        Debug.LogWarning($"[Interactable] {name} 无法打开UI面板 '{button.param1}'：{error}");
+        return false;
     }
 
     private void HijackWithItemTip(ButtonOption button, InteractionPhase phase)
@@ -723,6 +737,8 @@ public class Interactable : MonoBehaviour
             case InteractionType.EnterBattle:
                 ExecuteEnterBattle(button);
                 break;
+            case InteractionType.OpenUI:
+                return ExecuteOpenUI(button) ? 0 : -1;
             case InteractionType.SetCondition:
                 ExecuteSetCondition(button);
                 break;

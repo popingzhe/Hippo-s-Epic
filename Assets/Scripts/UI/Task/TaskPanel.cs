@@ -98,5 +98,10 @@ public class TaskPanel : UIWindow
     private void Close()
     {
         GameplayState.CloseTaskIfOpen();
+
+        // 兜底：面板被非 GameplayState 路径打开时 _taskOpen 为 false，关闭按钮要能自己关掉
+        var ui = ManagerRegistry.Get<UIManager>();
+        if (ui != null && ui.IsOpen<TaskPanel>())
+            ui.Close<TaskPanel>();
     }
 }

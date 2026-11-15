@@ -4931,7 +4931,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: b9c891ff271779b4eafd6ef51a3e6fc8, type: 3}
       propertyPath: phases.Array.data[0].autoTriggerFirstButton
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4157385159750846353, guid: b9c891ff271779b4eafd6ef51a3e6fc8, type: 3}
       propertyPath: phases.Array.data[0].buttons.Array.data[0].param1

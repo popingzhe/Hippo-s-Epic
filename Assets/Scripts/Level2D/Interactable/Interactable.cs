@@ -150,8 +150,16 @@ public class Interactable : MonoBehaviour
             int pick;
             if (order == PhaseAnimOrder.Random)
             {
-                pick = UnityEngine.Random.Range(0, list.Count);
-                if (list.Count > 1 && pick == last) pick = (pick + 1) % list.Count;
+                if (list.Count <= 1)
+                {
+                    pick = 0;
+                }
+                else
+                {
+                    // 从"除上一次以外的 N-1 项"里等概率取，避免连续重复且分布不偏向下一项
+                    pick = UnityEngine.Random.Range(0, list.Count - 1);
+                    if (last >= 0 && pick >= last) pick++;
+                }
             }
             else
             {

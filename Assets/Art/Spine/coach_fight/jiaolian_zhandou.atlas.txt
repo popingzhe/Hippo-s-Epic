@@ -1,19 +1,19 @@
 
 jiaolian_zhandou.png
-size: 1213,348
+size: 1396,348
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 bq1
   rotate: true
-  xy: 879, 181
+  xy: 1119, 8
   size: 165, 158
   orig: 165, 158
   offset: 0, 0
   index: -1
 bq2
-  rotate: true
-  xy: 1040, 185
+  rotate: false
+  xy: 1024, 175
   size: 161, 171
   orig: 161, 171
   offset: 0, 0
@@ -26,31 +26,52 @@ dead
   offset: 0, 0
   index: -1
 shou_l
-  rotate: true
-  xy: 1040, 2
+  rotate: false
+  xy: 1279, 47
   size: 105, 133
   orig: 105, 133
   offset: 0, 0
   index: -1
 shou_r
   rotate: true
-  xy: 474, 5
+  xy: 573, 5
   size: 83, 140
   orig: 83, 140
   offset: 0, 0
   index: -1
 shou_r2
-  rotate: false
-  xy: 947, 109
+  rotate: true
+  xy: 879, 159
   size: 187, 70
   orig: 187, 70
   offset: 0, 0
   index: -1
 shou_r3
-  rotate: false
-  xy: 862, 32
+  rotate: true
+  xy: 951, 170
   size: 176, 71
   orig: 187, 71
+  offset: 0, 0
+  index: -1
+shouji_1
+  rotate: false
+  xy: 943, 6
+  size: 174, 151
+  orig: 174, 151
+  offset: 0, 0
+  index: -1
+shouji_2
+  rotate: false
+  xy: 1187, 182
+  size: 131, 164
+  orig: 131, 164
+  offset: 0, 0
+  index: -1
+shouji_xue
+  rotate: true
+  xy: 474, 4
+  size: 84, 97
+  orig: 84, 97
   offset: 0, 0
   index: -1
 st
@@ -68,36 +89,36 @@ tou
   offset: 0, 0
   index: -1
 tui_l
-  rotate: false
-  xy: 792, 29
+  rotate: true
+  xy: 1320, 278
   size: 68, 74
   orig: 68, 74
   offset: 0, 0
   index: -1
 tui_r
   rotate: false
-  xy: 616, 13
+  xy: 823, 28
   size: 66, 75
   orig: 66, 75
   offset: 0, 0
   index: -1
 tx1
   rotate: true
-  xy: 684, 3
+  xy: 715, 3
   size: 100, 106
   orig: 100, 106
   offset: 0, 0
   index: -1
 xing
-  rotate: false
-  xy: 879, 108
+  rotate: true
+  xy: 1320, 210
   size: 66, 71
   orig: 66, 71
   offset: 0, 0
   index: -1
 xing2
-  rotate: false
-  xy: 1136, 121
+  rotate: true
+  xy: 879, 105
   size: 52, 62
   orig: 52, 62
   offset: 0, 0

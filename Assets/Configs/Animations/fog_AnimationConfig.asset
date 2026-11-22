@@ -38,7 +38,10 @@ MonoBehaviour:
     defaultWeight: 1
     additive: 0
     slotNames: []
-    availableClipNames: []
+    availableClipNames:
+    - idle1
+    - idle2
+    - idle3
   - name: UpperBody
     trackIndex: 1
     defaultWeight: 1

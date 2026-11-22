@@ -1,6 +1,6 @@
 ﻿// ============================================================
 // 自动生成文件 - 勿手动修改
-// 生成时间: 2026-11-08 19:08:06
+// 生成时间: 2026-11-15 20:52:38
 // 通过 Tools/Map/收集所有场景数据 重新生成
 // ============================================================
 
@@ -23,9 +23,23 @@ public static class TeleportTargetDef
     {
         new SceneEntry
         {
-            sceneName = "Scene_Punk_City",
-            mapNames = new string[] { "Punk_City_Ground", "Punk_City_movie" },
-            interactables = System.Array.Empty<InteractableEntry>()
+            sceneName = "Scene_Outer_City",
+            mapNames = new string[] { "Behind_Moon", "Outer_City_Ground" },
+            interactables = new InteractableEntry[]
+            {
+                new InteractableEntry { entityId = "Visual_interacteT", mapName = "Outer_City_Ground" },
+                new InteractableEntry { entityId = "alien_02_alienB", mapName = "Behind_Moon" },
+                new InteractableEntry { entityId = "spaceman_spaceman", mapName = "Outer_City_Ground" },
+                new InteractableEntry { entityId = "dead_alien_deadalien", mapName = "Behind_Moon" },
+                new InteractableEntry { entityId = "moon_backmoon", mapName = "Behind_Moon" },
+                new InteractableEntry { entityId = "Main_brain", mapName = "Behind_Moon" },
+                new InteractableEntry { entityId = "fog_interacteT", mapName = "Outer_City_Ground" },
+                new InteractableEntry { entityId = "fog (1)_interacteT", mapName = "Outer_City_Ground" },
+                new InteractableEntry { entityId = "alien_01_alienA", mapName = "Behind_Moon" },
+                new InteractableEntry { entityId = "sign_interacteT", mapName = "Outer_City_Ground" },
+                new InteractableEntry { entityId = "NPC_coach", mapName = "Outer_City_Ground" },
+                new InteractableEntry { entityId = "fog (2)_interacteT", mapName = "Outer_City_Ground" }
+            }
         }
     };
 

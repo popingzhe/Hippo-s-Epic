@@ -4444,6 +4444,8 @@ MonoBehaviour:
     activeChildNames: []
     playAnimation: 0
     animationController: {fileID: 0}
+    compositions: 
+    animationOrder: 0
     composition: 0
     canRepeat: 1
     hideAfterExecute: 0
@@ -6647,6 +6649,8 @@ MonoBehaviour:
     activeChildNames: []
     playAnimation: 0
     animationController: {fileID: 0}
+    compositions: 
+    animationOrder: 0
     composition: 0
     canRepeat: 1
     hideAfterExecute: 0
@@ -7368,6 +7372,8 @@ MonoBehaviour:
     activeChildNames: []
     playAnimation: 0
     animationController: {fileID: 0}
+    compositions: 
+    animationOrder: 0
     composition: 0
     canRepeat: 1
     hideAfterExecute: 0

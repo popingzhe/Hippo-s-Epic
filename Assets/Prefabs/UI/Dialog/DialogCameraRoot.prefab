@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 352b7d54da062944c9a862aee29b8cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textureWidth: 1920
-  textureHeight: 1080
+  textureWidth: 2560
+  textureHeight: 1076
   depthBuffer: 24
 --- !u!114 &153611643132965859
 MonoBehaviour:
@@ -129,7 +129,7 @@ Transform:
   m_GameObject: {fileID: 2139657895815849716}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.89, y: -8.32, z: 0}
+  m_LocalPosition: {x: -9, y: -8.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -274,7 +274,7 @@ Transform:
   m_GameObject: {fileID: 4015244584725107368}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11, y: -8.73, z: 0}
+  m_LocalPosition: {x: 13, y: -8.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

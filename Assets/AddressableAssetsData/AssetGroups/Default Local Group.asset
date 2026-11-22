@@ -35,12 +35,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - ui_prefab
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5e0861a17eabd3a4db06b3cfc207ce42
-    m_Address: Assets/Prefabs/UI/Dialog/BubbleOption
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - ui_prefab
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbba89dd17a70de4e83ec9117ea420e3
     m_Address: Assets/Prefabs/UI/Dialog/BubbleRight
     m_ReadOnly: 0

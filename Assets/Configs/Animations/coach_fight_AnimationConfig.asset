@@ -50,6 +50,12 @@ MonoBehaviour:
     speed: 1
     loop: 1
     type: 0
+  - name: body_hit
+    animation: {fileID: 11400000, guid: 8fbd4085196576349bcbcfaf71135948, type: 2}
+    animationName: body_hit
+    speed: 1
+    loop: 1
+    type: 0
   layers:
   - name: Base
     trackIndex: 0
@@ -81,11 +87,6 @@ MonoBehaviour:
     layers:
     - layerName: Base
       clipName: body_idle
-      weight: 1
-      transitionTime: 0.1
-      delay: 0
-    - layerName: UpperBody
-      clipName: start_test
       weight: 1
       transitionTime: 0.1
       delay: 0
@@ -126,6 +127,19 @@ MonoBehaviour:
     layers:
     - layerName: Base
       clipName: body_walk
+      weight: 1
+      transitionTime: 0.1
+      delay: 0
+  - name: 1
+    description: "\u63CF\u8FF0"
+    layers:
+    - layerName: Base
+      clipName: body_idle
+      weight: 1
+      transitionTime: 0.1
+      delay: 0
+    - layerName: UpperBody
+      clipName: start_test
       weight: 1
       transitionTime: 0.1
       delay: 0

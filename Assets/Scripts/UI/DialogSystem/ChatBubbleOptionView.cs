@@ -59,6 +59,12 @@ public sealed class ChatBubbleOptionView : MonoBehaviour
         _hoverBackgrounds.Sort((a, b) => b.CenterY.CompareTo(a.CenterY));
         if (lastHovered != null)
             EnterOption(lastHovered);
+        else if (_originalDrawOrder != null && gameObject.activeInHierarchy)
+        {
+            // 停用期间不能改同级顺序，回到激活状态后再归位。
+            ApplySiblingOrder(_originalDrawOrder);
+            _originalDrawOrder = null;
+        }
     }
 
     internal void EnterOption(Button button)
@@ -163,7 +169,9 @@ public sealed class ChatBubbleOptionView : MonoBehaviour
             if (entry.Image != null)
                 entry.Image.color = entry.OriginalColor;
         }
-        if (_originalDrawOrder != null)
+        // Unity 禁止在父物体激活/停用的调用栈里改同级顺序（OnDisable 期间就会报错），
+        // 那时保留缓存，等重新激活后的下一次 Bind 再归位。
+        if (_originalDrawOrder != null && gameObject.activeInHierarchy)
         {
             ApplySiblingOrder(_originalDrawOrder);
             _originalDrawOrder = null;

@@ -75,6 +75,8 @@ public class DialogWindow : UIWindow
         _renderer = _cameraRootInstance.GetComponent<DialogCharacterRenderer>();
         ManagerRegistry.Register(_renderer);
         _renderer.SetCharacterImage(_characterImage);
+        if (_characterImage != null && _characterImage.texture != null)
+            _characterImage.SetNativeSize();
 
         _rightSlotManager = _cameraRootInstance.GetComponent<RightSideSlotManager>();
         if (_rightSlotManager == null)
@@ -178,10 +180,9 @@ public class DialogWindow : UIWindow
         var go = new GameObject("CharacterLayer");
         var rect = go.AddComponent<RectTransform>();
         rect.SetParent(parent, false);
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.one;
-        rect.offsetMin = Vector2.zero;
-        rect.offsetMax = Vector2.zero;
+        // 居中显示相机实际渲染尺寸，不随父节点拉伸。
+        rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = Vector2.zero;
 
         _characterImage = go.AddComponent<RawImage>();
         _characterImage.raycastTarget = false;

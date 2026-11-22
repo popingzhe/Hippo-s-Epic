@@ -339,5 +339,287 @@
     "speakerid2": 2,
     "gain_item_id": 0,
     "condition_ids": []
+  },
+  {
+    "id": 9002001,
+    "type": 1,
+    "param1": [
+      9002010
+    ],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002010,
+    "type": 2,
+    "param1": [
+      9002011,
+      9002012,
+      9002013
+    ],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002011,
+    "type": 1,
+    "param1": [
+      9002020
+    ],
+    "param2": "",
+    "selection_name": "我先站在这里等一等",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002012,
+    "type": 1,
+    "param1": [
+      9002020
+    ],
+    "param2": "",
+    "selection_name": "我想沿着这条小路走走",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002013,
+    "type": 1,
+    "param1": [
+      9002020
+    ],
+    "param2": "",
+    "selection_name": "如果天黑之前没有回来就在这盏灯下等我",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002020,
+    "type": 2,
+    "param1": [
+      9002021,
+      9002022,
+      9002023
+    ],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002021,
+    "type": 1,
+    "param1": [
+      9002030
+    ],
+    "param2": "",
+    "selection_name": "我们先去街角看看那家店然后再回来找教练",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002022,
+    "type": 1,
+    "param1": [
+      9002030
+    ],
+    "param2": "",
+    "selection_name": "我不急着作决定我想先听听门后那个人到底准备告诉我们什么事情",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002023,
+    "type": 1,
+    "param1": [
+      9002030
+    ],
+    "param2": "",
+    "selection_name": "等雨停了以后我们沿着路灯一直走到桥边再回头看看这座城市是不是已经安静下来",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002030,
+    "type": 2,
+    "param1": [
+      9002031,
+      9002032,
+      9002033
+    ],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002031,
+    "type": 1,
+    "param1": [
+      9002040
+    ],
+    "param2": "",
+    "selection_name": "我打算先绕过前面的路口再顺着河岸慢慢走如果还能看见那盏灯就在那里停下来等你",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002032,
+    "type": 1,
+    "param1": [
+      9002040
+    ],
+    "param2": "",
+    "selection_name": "等到夜色完全落下来的时候我会带着地图回到这里把一路看见的每个路标都重新记进本子里",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002033,
+    "type": 1,
+    "param1": [
+      9002040
+    ],
+    "param2": "",
+    "selection_name": "我会把这一路经过的街角桥洞旧楼和藏在墙上的记号一一画在纸上等你回来以后我们再坐到灯下把今天发生的事情从头讲一遍",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002040,
+    "type": 2,
+    "param1": [
+      9002041,
+      9002042,
+      9002043,
+      9002044,
+      9002045,
+      9002046
+    ],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002041,
+    "type": 1,
+    "param1": [
+      9002050
+    ],
+    "param2": "",
+    "selection_name": "短句",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002042,
+    "type": 1,
+    "param1": [
+      9002050
+    ],
+    "param2": "",
+    "selection_name": "旁白选项",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002043,
+    "type": 1,
+    "param1": [
+      9002050
+    ],
+    "param2": "",
+    "selection_name": "保留手动<br>换行样式",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002044,
+    "type": 1,
+    "param1": [
+      9002050
+    ],
+    "param2": "",
+    "selection_name": "路线A-12，去桥边",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002045,
+    "type": 1,
+    "param1": [
+      9002050
+    ],
+    "param2": "",
+    "selection_name": "仍可选择该项",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002046,
+    "type": 1,
+    "param1": [
+      9002050
+    ],
+    "param2": "",
+    "selection_name": "结束样式测试",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
+  },
+  {
+    "id": 9002050,
+    "type": 1,
+    "param1": [],
+    "param2": "",
+    "selection_name": "",
+    "speakerid1": 1,
+    "speakerid2": 2,
+    "gain_item_id": 0,
+    "condition_ids": []
   }
 ]

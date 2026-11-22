@@ -194,13 +194,11 @@ public class DialogManagerUI : MonoBehaviour
             _currentInteractables = null;
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(chatContent);
-            ScrollToBottom();
 
             _dialogManager.ChooseOption(index);
         });
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(chatContent);
-        ScrollToBottom();
     }
 
     private void OnContent(SpeakerSide side, string text, string speakerName, string gainItemText)
@@ -310,13 +308,11 @@ public class DialogManagerUI : MonoBehaviour
             _currentInteractables = null;
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(chatContent);
-            ScrollToBottom();
 
             _dialogManager.ChooseOption(index);
         });
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(chatContent);
-        ScrollToBottom();
     }
 
     private void MarkAsLatest(GameObject bubbleRoot)

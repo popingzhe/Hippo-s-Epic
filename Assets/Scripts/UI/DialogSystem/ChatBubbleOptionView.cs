@@ -9,7 +9,8 @@ using UnityEngine.UI;
 
 public sealed class ChatBubbleOptionView : MonoBehaviour
 {
-    private const int ShortLineLength = 9;
+    // 一行的宽度预算 = 9 个全角字的实测宽度；窄字符（数字/字母/半角标点）自然能多排几个。
+    private const int LineBudgetCharacters = 9;
     private const int MaxLineLength = 18;
     private const int MaxOptionSlots = 6;
     // 近的浅、远的深：中心保持原色，紧邻项 190，再远 153。
@@ -221,11 +222,11 @@ public sealed class ChatBubbleOptionView : MonoBehaviour
         bool wantsExtended = index < extends.Length && !string.IsNullOrEmpty(extends[index]);
         bool showNormal = hasOption && !wantsExtended && normalObj != null && normalBtn != null && normalTxt != null;
         bool showExtended = hasOption && wantsExtended && extendObj != null && extendBtn != null && extendTxt != null;
-        string text = hasOption ? FormatOptionText(texts[index]) : string.Empty;
+        string label = hasOption ? texts[index] : string.Empty;
         bool interactable = index < interactables.Length && interactables[index];
 
-        SetSlot(normalObj, normalBtn, normalTxt, showNormal, text, interactable, index, onChoose);
-        SetSlot(extendObj, extendBtn, extendTxt, showExtended, text, interactable, index, onChoose);
+        SetSlot(normalObj, normalBtn, normalTxt, showNormal, label, interactable, index, onChoose);
+        SetSlot(extendObj, extendBtn, extendTxt, showExtended, label, interactable, index, onChoose);
     }
 
     private void ResolveSlot(string name, ref GameObject slot, ref Button button, ref TMP_Text text)
@@ -249,7 +250,7 @@ public sealed class ChatBubbleOptionView : MonoBehaviour
         slot.SetActive(show);
         if (!show) return;
 
-        text.text = label;
+        text.text = FormatOptionText(label, text);
         text.color = interactable ? _normalColor : disabledColor;
         button.interactable = interactable;
         button.onClick.AddListener(() => onChoose?.Invoke(index));
@@ -272,31 +273,97 @@ public sealed class ChatBubbleOptionView : MonoBehaviour
         hover.Initialize(this, button);
     }
 
-    private static string FormatOptionText(string text)
+    private static string FormatOptionText(string text, TMP_Text probe)
     {
-        // 保留配表中已有的分行（包括 TMP 的 <br>）；每个手动分段各自应用字数规则。
+        // 保留配表中已有的分行（包括 TMP 的 <br>）；每个手动分段各自按宽度排。
         string[] paragraphs = ExplicitLineBreak.Split(text);
         for (int i = 0; i < paragraphs.Length; i++)
-            paragraphs[i] = WrapOptionLine(paragraphs[i]);
+            paragraphs[i] = WrapOptionLine(paragraphs[i], probe);
         return string.Join("\n", paragraphs);
     }
 
-    private static string WrapOptionLine(string text)
+    // 按实测字宽贪心排行：预算 = 9 个全角字，窄字符能多排，不再按字符个数一刀切。
+    private static string WrapOptionLine(string text, TMP_Text probe)
     {
-        // 用文本元素计数，分行时不拆开代理对或组合字符。
+        if (probe == null) return WrapOptionLineByCount(text, LineBudgetCharacters, MaxLineLength);
+
         int[] starts = StringInfo.ParseCombiningCharacters(text);
         int count = starts.Length;
-        if (count <= ShortLineLength) return text;
+        if (count <= 1) return text;
 
-        if (count <= 2 * MaxLineLength)
+        float budget = MeasureWidth(probe, new string('中', LineBudgetCharacters));
+        if (budget <= 0f) return WrapOptionLineByCount(text, LineBudgetCharacters, MaxLineLength);
+
+        // 前缀宽度：prefix[i] = 前 i 个文本元素的实测宽度（含字距），比逐字累加准。
+        var prefix = new float[count + 1];
+        for (int i = 1; i <= count; i++)
+            prefix[i] = MeasureWidth(probe, text.Substring(0, ElementStart(text, starts, i)));
+
+        if (prefix[count] <= budget) return text;
+
+        var result = new StringBuilder(text.Length + 8);
+        int lineStart = 0;
+        while (lineStart < count)
         {
-            int split = count <= MaxLineLength ? ShortLineLength : (count + 1) / 2;
+            int lineEnd = lineStart + 1;
+            while (lineEnd < count && prefix[lineEnd + 1] - prefix[lineStart] <= budget) lineEnd++;
+
+            if (lineEnd < count)
+            {
+                int breakAt = PreferSpaceBreak(text, starts, lineStart, lineEnd);
+                if (breakAt > lineStart) lineEnd = breakAt;
+                // 单个文本元素超过预算时也要前进，避免死循环。
+                if (lineEnd <= lineStart) lineEnd = lineStart + 1;
+            }
+
+            result.Append(text, starts[lineStart], ElementStart(text, starts, lineEnd) - starts[lineStart]).Append('\n');
+            lineStart = lineEnd;
+            while (lineStart < count && char.IsWhiteSpace(text[starts[lineStart]])) lineStart++;
+        }
+        return result.ToString(0, result.Length - 1);
+    }
+
+    private static float MeasureWidth(TMP_Text probe, string value)
+    {
+        if (string.IsNullOrEmpty(value)) return 0f;
+        return probe.GetPreferredValues(value).x;
+    }
+
+    private static int PreferSpaceBreak(string text, int[] starts, int lineStart, int overflow)
+    {
+        // 只有会把英文/数字单词劈成两半时才回退到空格，中文按宽度直接断。
+        if (overflow >= starts.Length || !IsAsciiWordChar(text[starts[overflow]])) return overflow;
+        for (int i = overflow - 1; i > lineStart; i--)
+            if (char.IsWhiteSpace(text[starts[i]])) return i;
+        return overflow;
+    }
+
+    private static bool IsAsciiWordChar(char c)
+    {
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    private static int ElementStart(string text, int[] starts, int index)
+    {
+        return index < starts.Length ? starts[index] : text.Length;
+    }
+
+    // 没有 TMP 探针时的兜底：仍按字符数（全角=1，半角≈0.5）估算。
+    private static string WrapOptionLineByCount(string text, int lineCharacters, int maxCharacters)
+    {
+        int[] starts = StringInfo.ParseCombiningCharacters(text);
+        int count = starts.Length;
+        if (count <= lineCharacters) return text;
+
+        if (count <= 2 * maxCharacters)
+        {
+            int split = count <= maxCharacters ? lineCharacters : (count + 1) / 2;
             return text.Insert(starts[split], "\n");
         }
 
         var result = new StringBuilder(text.Length);
         int start = 0;
-        for (int i = MaxLineLength; i < count; i += MaxLineLength)
+        for (int i = maxCharacters; i < count; i += maxCharacters)
         {
             int end = starts[i];
             result.Append(text, start, end - start).Append('\n');
